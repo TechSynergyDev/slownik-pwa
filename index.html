@@ -2,213 +2,187 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Słownik PWA</title>
-    <!-- iOS / PWA Meta -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Słownik">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3898/3898082.png">
-    
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 20px; }
+        .container { max-width: 500px; margin: 0 auto; }
+        h1 { font-size: 24px; margin-bottom: 5px; }
+        .status-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; margin-bottom: 20px; }
+        .online { background: #065f46; color: #34d399; }
+        .offline { background: #78350f; color: #fbbf24; }
+        .card { background: #1e293b; padding: 15px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        input, button { width: 100%; padding: 12px; margin-top: 8px; margin-bottom: 8px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; font-size: 16px; box-sizing: border-box; }
+        button { background: #2563eb; border: none; font-weight: bold; cursor: pointer; }
+        button:active { background: #1d4ed8; }
+        .word-item { background: #334155; padding: 12px; border-radius: 8px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .badge-sync { font-size: 11px; padding: 3px 8px; border-radius: 6px; background: #78350f; color: #fbbf24; }
+        .badge-cloud { font-size: 11px; padding: 3px 8px; border-radius: 6px; background: #065f46; color: #34d399; }
+    </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen font-sans antialiased pb-10">
+<body>
+<div class="container">
+    <h1>Słownik PWA</h1>
+    <div id="net-status" class="status-badge online">● Online</div>
 
-    <div class="max-w-md mx-auto p-4 space-y-6">
-        <!-- Nagłówek i Status Sieci -->
-        <header class="flex justify-between items-center pt-4 border-b border-slate-800 pb-4">
-            <div>
-                <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
-                    Słownik PWA
-                </h1>
-                <p class="text-xs text-slate-400">iPhone 12 Offline-First</p>
-            </div>
-            <div id="status-badge" class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800 flex items-center gap-1.5">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>Online</span>
-            </div>
-        </header>
-
-        <!-- Formularz dodawania słówka -->
-        <form id="word-form" class="bg-slate-800 p-4 rounded-xl border border-slate-700/50 shadow-lg space-y-3">
-            <h2 class="text-sm font-semibold text-slate-300">Dodaj nowe słówko</h2>
-            <div class="grid grid-cols-2 gap-2">
-                <input type="text" id="input-english" placeholder="Angielski (np. Apple)" required 
-                    class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 text-slate-100">
-                <input type="text" id="input-polish" placeholder="Polski (np. Jabłko)" required 
-                    class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 text-slate-100">
-            </div>
-            <button type="submit" 
-                class="w-full bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-medium py-2 rounded-lg text-sm transition-colors shadow">
-                Dodaj słówko
-            </button>
-        </form>
-
-        <!-- Wyszukiwarka -->
-        <div>
-            <input type="text" id="search-input" placeholder="Szukaj słówka..." 
-                class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 text-slate-100 shadow-inner">
-        </div>
-
-        <!-- Lista słówek -->
-        <div class="space-y-3">
-            <div class="flex justify-between items-center">
-                <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Twoje Słówka</h2>
-                <span id="word-count" class="text-xs text-slate-500">0 słów</span>
-            </div>
-            <ul id="words-list" class="space-y-2">
-                <!-- Słówka będą generowane dynamicznie -->
-            </ul>
-        </div>
+    <div class="card">
+        <h3>Dodaj nowe słówko</h3>
+        <input type="text" id="eng-input" placeholder="Angielski (np. Apple)">
+        <input type="text" id="pl-input" placeholder="Polski (np. Jabłko)">
+        <button onclick="addNewWord()">Dodaj słówko</button>
     </div>
 
-    <!-- Logika Bazy Danych i Synchronizacji -->
-    <script>
-        // Zaktualizowany URL z Twojej usługi Azure Function App
-        const AZURE_API_URL = "https://api-slownika-2026-dza6ffgwdugxengh.polandcentral-01.azurewebsites.net/api/words";
+    <div class="card">
+        <button onclick="forceSync()" style="background: #059669;">🔄 Testuj połączenie z Azure</button>
+    </div>
 
-        let db;
-        const request = indexedDB.open("SlownikPWA_DB", 1);
+    <h2>Twoje słówka</h2>
+    <div id="words-list"></div>
+</div>
 
-        request.onupgradeneeded = (e) => {
-            db = e.target.result;
-            if (!db.objectStoreNames.contains("words")) {
-                const store = db.createObjectStore("words", { keyPath: "id", autoIncrement: true });
-                store.createIndex("synced", "synced", { unique: false });
-            }
-        };
+<script>
+    // Oficjalny, poprawny adres Twojego API w Azure
+    const AZURE_API_URL = "https://api-slownika-2026-dza6ffgwdugxengh.polandcentral-01.azurewebsites.net/api/words";
+    
+    let db;
+    const request = indexedDB.open("SlownikDB", 1);
 
-        request.onsuccess = (e) => {
-            db = e.target.result;
+    request.onerror = (event) => console.error("IndexedDB error:", event.target.error);
+    request.onsuccess = (event) => {
+        db = event.target.result;
+        loadWords();
+    };
+    request.onupgradeneeded = (event) => {
+        db = event.target.result;
+        if (!db.objectStoreNames.contains("words")) {
+            db.createObjectStore("words", { keyPath: "id", autoIncrement: true });
+        }
+    };
+
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+
+    function updateOnlineStatus() {
+        const statusEl = document.getElementById("net-status");
+        if (navigator.onLine) {
+            statusEl.textContent = "● Online";
+            statusEl.className = "status-badge online";
+            syncData();
+        } else {
+            statusEl.textContent = "● Offline";
+            statusEl.className = "status-badge offline";
+        }
+    }
+
+    function addNewWord() {
+        const eng = document.getElementById("eng-input").value.trim();
+        const pl = document.getElementById("pl-input").value.trim();
+        if (!eng || !pl) return alert("Wypełnij oba pola!");
+
+        const transaction = db.transaction(["words"], "readwrite");
+        const store = transaction.objectStore("words");
+        const wordObj = { english: eng, polish: pl, synced: false, createdAt: new Date().toISOString() };
+
+        const req = store.add(wordObj);
+        req.onsuccess = () => {
+            document.getElementById("eng-input").value = "";
+            document.getElementById("pl-input").value = "";
             loadWords();
             syncData();
         };
+    }
 
-        // Aktualizacja statusu sieci (Online/Offline)
-        function updateNetworkStatus() {
-            const badge = document.getElementById("status-badge");
-            if (navigator.onLine) {
-                badge.className = "px-3 py-1 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800 flex items-center gap-1.5";
-                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span><span>Online</span>`;
-                syncData();
-            } else {
-                badge.className = "px-3 py-1 rounded-full text-xs font-semibold bg-amber-950 text-amber-400 border border-amber-800 flex items-center gap-1.5";
-                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span><span>Offline</span>`;
-            }
-        }
+    function loadWords() {
+        if (!db) return;
+        const transaction = db.transaction(["words"], "readonly");
+        const store = transaction.objectStore("words");
+        const req = store.getAll();
 
-        window.addEventListener('online', updateNetworkStatus);
-        window.addEventListener('offline', updateNetworkStatus);
-        updateNetworkStatus();
+        req.onsuccess = () => {
+            const listEl = document.getElementById("words-list");
+            listEl.innerHTML = "";
+            req.result.reverse().forEach(word => {
+                const div = document.createElement("div");
+                div.className = "word-item";
+                div.innerHTML = `
+                    <div>
+                        <strong>${word.english}</strong><br><small>${word.polish}</small>
+                    </div>
+                    <span class="${word.synced ? 'badge-cloud' : 'badge-sync'}">
+                        ${word.synced ? 'Zapisano w chmurze' : 'Lokalnie (Offline)'}
+                    </span>
+                `;
+                listEl.appendChild(div);
+            });
+        };
+    }
 
-        // Dodawanie słówka do IndexedDB (Lokalnie)
-        document.getElementById("word-form").addEventListener("submit", (e) => {
-            e.preventDefault();
-            const english = document.getElementById("input-english").value.trim();
-            const polish = document.getElementById("input-polish").value.trim();
+    async function syncData() {
+        if (!navigator.onLine) return;
+        try {
+            const transaction = db.transaction(["words"], "readonly");
+            const store = transaction.objectStore("words");
+            const req = store.getAll();
 
-            if (!english || !polish) return;
-
-            const tx = db.transaction("words", "readwrite");
-            const store = tx.objectStore("words");
-            
-            const newWord = {
-                english: english,
-                polish: polish,
-                createdAt: new Date().toISOString(),
-                synced: false
-            };
-
-            store.add(newWord);
-
-            tx.oncomplete = () => {
-                document.getElementById("input-english").value = "";
-                document.getElementById("input-polish").value = "";
-                loadWords();
-                syncData();
-            };
-        });
-
-        // Pobieranie i wyświetlanie słówek z IndexedDB
-        function loadWords(query = "") {
-            const tx = db.transaction("words", "readonly");
-            const store = tx.objectStore("words");
-            const request = store.getAll();
-
-            request.onsuccess = () => {
-                const list = document.getElementById("words-list");
-                list.innerHTML = "";
-                let words = request.result.reverse();
-
-                if (query) {
-                    words = words.filter(w => 
-                        w.english.toLowerCase().includes(query.toLowerCase()) || 
-                        w.polish.toLowerCase().includes(query.toLowerCase())
-                    );
-                }
-
-                document.getElementById("word-count").textContent = `${words.length} słów`;
-
-                if (words.length === 0) {
-                    list.innerHTML = `<li class="text-center py-6 text-slate-500 text-sm">Brak słówek w bazie. Dodaj pierwsze!</li>`;
-                    return;
-                }
-
-                words.forEach(w => {
-                    const li = document.createElement("li");
-                    li.className = "bg-slate-800 border border-slate-700/60 p-3 rounded-xl flex justify-between items-center shadow-sm";
-                    li.innerHTML = `
-                        <div>
-                            <p class="font-semibold text-slate-100 text-base">${w.english}</p>
-                            <p class="text-sm text-slate-400">${w.polish}</p>
-                        </div>
-                        <span class="text-[10px] px-2 py-0.5 rounded ${w.synced ? 'bg-slate-700 text-slate-400' : 'bg-amber-900/40 text-amber-400 border border-amber-800/50'}">
-                            ${w.synced ? 'Zapisano w chmurze' : 'Lokalnie (Offline)'}
-                        </span>
-                    `;
-                    list.appendChild(li);
-                });
-            };
-        }
-
-        // Wyszukiwanie na żywo
-        document.getElementById("search-input").addEventListener("input", (e) => {
-            loadWords(e.target.value);
-        });
-
-        // Automatyczna synchronizacja z Azure Function App
-        async function syncData() {
-            if (!navigator.onLine || !db) return;
-
-            const tx = db.transaction("words", "readwrite");
-            const store = tx.objectStore("words");
-            const request = store.getAll();
-
-            request.onsuccess = async () => {
-                const unsyncedWords = request.result.filter(w => !w.synced);
-                
-                for (let word of unsyncedWords) {
-                    try {
-                        const response = await fetch(AZURE_API_URL, {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ english: word.english, polish: word.polish })
-                        });
-
-                        if (response.ok) {
-                            const updateTx = db.transaction("words", "readwrite");
-                            const updateStore = updateTx.objectStore("words");
-                            word.synced = true;
-                            updateStore.put(word);
-                            updateTx.oncomplete = () => loadWords();
+            req.onsuccess = async () => {
+                const words = req.result;
+                for (const word of words) {
+                    if (!word.synced) {
+                        try {
+                            const response = await fetch(AZURE_API_URL, {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ english: word.english, polish: word.polish })
+                            });
+                            if (response.ok) {
+                                markAsSynced(word.id);
+                            }
+                        } catch (e) {
+                            console.log("Sync failed for item", e);
                         }
-                    } catch (err) {
-                        console.log("Brak łączności z serwerem Azure API");
                     }
                 }
             };
+        } catch (err) {
+            console.error("Sync error:", err);
         }
-    </script>
+    }
+
+    function markAsSynced(id) {
+        const transaction = db.transaction(["words"], "readwrite");
+        const store = transaction.objectStore("words");
+        const req = store.get(id);
+        req.onsuccess = () => {
+            const data = req.result;
+            if (data) {
+                data.synced = true;
+                store.put(data);
+                loadWords();
+            }
+        };
+    }
+
+    // Przycisk testowy z komunikatami na ekranie iPhone'a
+    async function forceSync() {
+        try {
+            const testPayload = { english: "TestManual", polish: "RęcznyTest" };
+            const response = await fetch(AZURE_API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(testPayload)
+            });
+
+            if (response.ok) {
+                alert("Sukces! Połączenie z Azure działa i dane zostały przyjęte.");
+                syncData();
+            } else {
+                const text = await response.text();
+                alert("Błąd serwera HTTP " + response.status + ": " + text);
+            }
+        } catch (err) {
+            alert("Błąd sieci / CORS: " + err.message);
+        }
+    }
+</script>
 </body>
 </html>
