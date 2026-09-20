@@ -43,6 +43,7 @@
 <script>
     // Oficjalny, poprawny adres Twojego API w Azure
     const AZURE_API_URL = "https://api-slownika-2026-dza6ffgwdugxengh.polandcentral-01.azurewebsites.net/api/words";
+    const AZURE_FUNCTION_KEY = "OaQr-ZvTVr3DYcTUS1XsZ-E4PtowdXjz3TtUJyZyqJ6XAzFux4p-jA==";
     
     let db;
     const request = indexedDB.open("SlownikDB", 1);
@@ -131,7 +132,10 @@
                         try {
                             const response = await fetch(AZURE_API_URL, {
                                 method: "POST",
-                                headers: { "Content-Type": "application/json" },
+                                headers: { 
+                                    "Content-Type": "application/json",
+                                    "x-functions-key": AZURE_FUNCTION_KEY
+                                },
                                 body: JSON.stringify({ english: word.english, polish: word.polish })
                             });
                             if (response.ok) {
@@ -162,25 +166,74 @@
         };
     }
 
-    // Przycisk testowy z komunikatami na ekranie iPhone'a
+    // Zaawansowana funkcja testowa przechwytująca wszystkie możliwe przypadki z dokładnym opisem
     async function forceSync() {
+        if (!navigator.onLine) {
+            return alert("🌐 BRAK INTERNETU:\nTwoje urządzenie jest offline. Połącz się z siecią, aby przetestować Azure.");
+        }
+
+        const testPayload = { english: "TestManual", polish: "RęcznyTest" };
+        
+        // Ustawiamy maksymalny czas oczekiwania (10 sekund), żeby przeglądarka nie "wisiała"
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); 
+
         try {
-            const testPayload = { english: "TestManual", polish: "RęcznyTest" };
             const response = await fetch(AZURE_API_URL, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(testPayload)
+                headers: { 
+                    "Content-Type": "application/json",
+                    "x-functions-key": AZURE_FUNCTION_KEY
+                },
+                body: JSON.stringify(testPayload),
+                signal: controller.signal
             });
 
+            clearTimeout(timeoutId); // Zatrzymujemy odliczanie, jeśli serwer odpowiedział
+
+            // Przypadek 1: Pełen sukces (kody HTTP 200-299)
             if (response.ok) {
-                alert("Sukces! Połączenie z Azure działa i dane zostały przyjęte.");
-                syncData();
+                alert("✅ SUKCES!\nPołączenie z Azure działa perfekcyjnie, dane zostały przyjęte. Autoryzacja i CORS są poprawne!");
+                syncData(); 
             } else {
                 const text = await response.text();
-                alert("Błąd serwera HTTP " + response.status + ": " + text);
+                
+                // Przypadek 2: Problem z kluczem dostępu
+                if (response.status === 401 || response.status === 403) {
+                    alert(`❌ BŁĄD AUTORYZACJI (HTTP ${response.status}):\nAzure odrzucił zapytanie. Klucz 'x-functions-key' jest niepoprawny lub nie dotarł. Upewnij się, że skopiowałeś dobry klucz Default z Azure.\nTreść z serwera: ${text}`);
+                } 
+                // Przypadek 3: Zły adres lub funkcja nie istnieje
+                else if (response.status === 404) {
+                    alert(`❌ NIE ZNALEZIONO ZASOBU (HTTP 404):\nAzure odpowiada, ale pod adresem nie ma funkcji 'words'. Sprawdź, czy adres API URL w kodzie jest prawidłowy.\nTreść z serwera: ${text}`);
+                } 
+                // Przypadek 4: Błąd wysłanych danych
+                else if (response.status === 400) {
+                    alert(`❌ BŁĄD STRUKTURY DANYCH (HTTP 400):\nAzure przyjął zapytanie, ale odrzucił treść. Prawdopodobnie kod Twojej funkcji w C# wymaga innych pól w JSON.\nTreść z serwera: ${text}`);
+                } 
+                // Przypadek 5: Błąd w kodzie serwera Azure
+                else if (response.status >= 500) {
+                    alert(`❌ AWARIA SERWERA AZURE (HTTP ${response.status}):\nPołączenie udane, ale wystąpił błąd krytyczny w kodzie po stronie chmury (np. baza danych nie działa lub błąd w C#). Sprawdź "Log stream" w Azure.\nTreść z serwera: ${text}`);
+                } 
+                // Przypadek 6: Inne błędy HTTP
+                else {
+                    alert(`⚠️ NIEOCZEKIWANY BŁĄD (HTTP ${response.status}):\nOtrzymano niezidentyfikowany kod odpowiedzi z serwera.\nTreść: ${text}`);
+                }
             }
         } catch (err) {
-            alert("Błąd sieci / CORS: " + err.message);
+            clearTimeout(timeoutId);
+            
+            // Przypadek 7: Serwer Azure nie odpowiada (przekroczono 10 sekund)
+            if (err.name === 'AbortError') {
+                alert("⏳ PRZEKROCZONO CZAS (TIMEOUT):\nSerwer Azure nie odpowiada od 10 sekund. Wejdź na Azure i sprawdź czy usługa Function App jest uruchomiona ('Running').");
+            } 
+            // Przypadek 8: Problem CORS lub adblocker zabił zapytanie w przeglądarce
+            else if (err.message.includes("Failed to fetch") || err.message.includes("NetworkError")) {
+                alert(`🚫 BŁĄD SIECI / CORS:\nPrzeglądarka zablokowała żądanie zanim dotarło do serwera (NetworkError / Failed to fetch).\n\nMOŻLIWE PRZYCZYNY:\n1. Adres strony GitHub Pages nadal nie jest poprawnie załadowany w zakładce CORS na Azure (lub nie odświeżono pamięci podręcznej przeglądarki z nowym kodem HTML).\n2. Rozszerzenie typu AdBlock blokuje zapytanie.\n3. Całkowicie nieaktywny serwer (Azure jest wyłączony).`);
+            } 
+            // Przypadek 9: Inne błędy techniczne przeglądarki
+            else {
+                alert(`⚠️ NIEZNANY BŁĄD TECHNICZNY:\nSprawdź konsolę przeglądarki (F12). Treść błędu: ${err.message}`);
+            }
         }
     }
 </script>
