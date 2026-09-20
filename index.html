@@ -43,7 +43,6 @@
 <script>
     // Oficjalny, poprawny adres Twojego API w Azure wraz z kluczem
     const AZURE_API_URL = "https://slownik-backend-2026-gvhdbsfjamgtf9c9.polandcentral-01.azurewebsites.net/api/words?code=F1Rs4NMbIyvgb568ql7bfDhJyFEDPPceI0QUdcHJLYeIAzFuZApD1Q==";
-    const AZURE_FUNCTION_KEY = "";
     
     let db;
     const request = indexedDB.open("SlownikDB", 1);
@@ -82,7 +81,14 @@
 
         const transaction = db.transaction(["words"], "readwrite");
         const store = transaction.objectStore("words");
-        const wordObj = { english: eng, polish: pl, synced: false, createdAt: new Date().toISOString() };
+        
+        // Używamy polishDefinition jako klucza zgodnego z Azure
+        const wordObj = { 
+            english: eng, 
+            polishDefinition: pl, 
+            synced: false, 
+            createdAt: new Date().toISOString() 
+        };
 
         const req = store.add(wordObj);
         req.onsuccess = () => {
@@ -107,7 +113,7 @@
                 div.className = "word-item";
                 div.innerHTML = `
                     <div>
-                        <strong>${word.english}</strong><br><small>${word.polish}</small>
+                        <strong>${word.english}</strong><br><small>${word.polishDefinition || word.polish || ''}</small>
                     </div>
                     <span class="${word.synced ? 'badge-cloud' : 'badge-sync'}">
                         ${word.synced ? 'Zapisano w chmurze' : 'Lokalnie (Offline)'}
@@ -135,7 +141,10 @@
                                 headers: { 
                                     "Content-Type": "application/json"
                                 },
-                                body: JSON.stringify({ english: word.english, polish: word.polish })
+                                body: JSON.stringify({ 
+                                    english: word.english, 
+                                    polishDefinition: word.polishDefinition || word.polish 
+                                })
                             });
                             if (response.ok) {
                                 markAsSynced(word.id);
@@ -170,7 +179,7 @@
             return alert("🌐 BRAK INTERNETU:\nTwoje urządzenie jest offline. Połącz się z siecią, aby przetestować Azure.");
         }
 
-        const testPayload = { english: "TestManual", polish: "RęcznyTest" };
+        const testPayload = { english: "TestManual", polishDefinition: "RęcznyTest" };
         
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000); 
@@ -192,34 +201,14 @@
                 syncData(); 
             } else {
                 const text = await response.text();
-                
-                if (response.status === 401 || response.status === 403) {
-                    alert(`❌ BŁĄD AUTORYZACJI (HTTP ${response.status}):\nAzure odrzucił zapytanie. Klucz jest niepoprawny lub nie dotarł.\nTreść z serwera: ${text}`);
-                } 
-                else if (response.status === 404) {
-                    alert(`❌ NIE ZNALEZIONO ZASOBU (HTTP 404):\nAzure odpowiada, ale pod adresem nie ma funkcji 'words'.\nTreść z serwera: ${text}`);
-                } 
-                else if (response.status === 400) {
-                    alert(`❌ BŁĄD STRUKTURY DANYCH (HTTP 400):\nAzure przyjął zapytanie, ale odrzucił treść.\nTreść z serwera: ${text}`);
-                } 
-                else if (response.status >= 500) {
-                    alert(`❌ AWARIA SERWERA AZURE (HTTP ${response.status}):\nWystąpił błąd krytyczny po stronie chmury.\nTreść z serwera: ${text}`);
-                } 
-                else {
-                    alert(`⚠️ NIEOCZEKIWANY BŁĄD (HTTP ${response.status}):\nOtrzymano niezidentyfikowany kod odpowiedzi.\nTreść: ${text}`);
-                }
+                alert(`⚠️ Ostrzeżenie serwera (HTTP ${response.status}): ${text}`);
             }
         } catch (err) {
             clearTimeout(timeoutId);
-            
             if (err.name === 'AbortError') {
                 alert("⏳ PRZEKROCZONO CZAS (TIMEOUT):\nSerwer Azure nie odpowiada od 10 sekund.");
-            } 
-            else if (err.message.includes("Failed to fetch") || err.message.includes("NetworkError")) {
-                alert(`🚫 BŁĄD SIECI / CORS:\nPrzeglądarka zablokowała żądanie zanim dotarło do serwera.`);
-            } 
-            else {
-                alert(`⚠️ NIEZNANY BŁĄD TECHNICZNY:\nSprawdź konsolę przeglądarki (F12). Treść błędu: ${err.message}`);
+            } else {
+                alert(`🚫 BŁĄD SIECI / CORS: ${err.message}`);
             }
         }
     }
