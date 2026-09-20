@@ -1,0 +1,362 @@
+[
+  {
+    "english": "end up",
+    "polishDefinition": "skończyć (jakoś/gdzieś), wylądować",
+    "pos": "phr verb",
+    "phonetic": "/end ʌp/",
+    "sentences": [
+      { "en": "We ended up watching three episodes instead of one.", "pl": "Skończyło się na tym, że obejrzeliśmy trzy odcinki zamiast jednego." },
+      { "en": "If you keep ignoring the alerts, you will end up with a bigger problem.", "pl": "Jeśli dalej będziesz ignorować alerty, skończysz z większym problemem." },
+      { "en": "I ended up in the wrong meeting room.", "pl": "Wylądowałem w niewłaściwej sali." },
+      { "en": "How did we end up here?", "pl": "Jak my tu w ogóle wylądowaliśmy?" },
+      { "en": "Most of those ideas end up at the bottom of the backlog.", "pl": "Większość tych pomysłów ląduje na dnie backlogu." }
+    ],
+    "collocations": ["end up doing sth", "end up with sth", "end up in"],
+    "rules": "Po end up idzie forma -ing (end up paying) albo przyimek: end up with, end up in. Nigdy bezokolicznik.",
+    "mnemonic": "Koniec (end) lądowania — gdzieś w końcu siadasz, niekoniecznie tam, gdzie planowałeś.",
+    "tags": ["seriale", "phrasal verbs"],
+    "level": "B2"
+  },
+  {
+    "english": "show up",
+    "polishDefinition": "pojawić się, zjawić się",
+    "pos": "phr verb",
+    "phonetic": "/ʃəʊ ʌp/",
+    "sentences": [
+      { "en": "He did not show up for the interview.", "pl": "Nie pojawił się na rozmowie o pracę." },
+      { "en": "Half the team showed up late.", "pl": "Połowa zespołu zjawiła się spóźniona." },
+      { "en": "The error only shows up under heavy load.", "pl": "Ten błąd pojawia się tylko przy dużym obciążeniu." },
+      { "en": "Just show up and be yourself.", "pl": "Po prostu przyjdź i bądź sobą." },
+      { "en": "Nobody showed up to the party.", "pl": "Nikt nie przyszedł na imprezę." }
+    ],
+    "collocations": ["show up late", "show up for work"],
+    "rules": "Nieformalny odpowiednik arrive albo appear. Bez dopełnienia; miejsce dodajesz przyimkiem: show up at, show up for.",
+    "mnemonic": "Pokazujesz się (show) i już cię widać na liście obecnych.",
+    "tags": ["seriale", "phrasal verbs"],
+    "level": "B2"
+  },
+  {
+    "english": "mess up",
+    "polishDefinition": "zawalić coś, spartaczyć",
+    "pos": "phr verb",
+    "phonetic": "/mes ʌp/",
+    "sentences": [
+      { "en": "I completely messed up the presentation.", "pl": "Kompletnie zawaliłem prezentację." },
+      { "en": "Sorry, I messed up.", "pl": "Przepraszam, nawaliłem." },
+      { "en": "One wrong command messed up the whole configuration.", "pl": "Jedna zła komenda rozwaliła całą konfigurację." },
+      { "en": "Do not mess this up.", "pl": "Nie zawal tego." },
+      { "en": "The update messed up my settings.", "pl": "Aktualizacja rozwaliła mi ustawienia." }
+    ],
+    "collocations": ["mess something up", "mess up badly"],
+    "rules": "Rozdzielny: mess it up, nigdy mess up it. Potoczne — w mailu do klienta lepiej brzmi there was a mistake.",
+    "mnemonic": "Robisz bałagan (mess) i wszystko idzie do góry nogami.",
+    "tags": ["seriale", "phrasal verbs"],
+    "level": "B2"
+  },
+  {
+    "english": "catch up",
+    "polishDefinition": "nadrobić zaległości; pogadać po dłuższym czasie",
+    "pos": "phr verb",
+    "phonetic": "/kætʃ ʌp/",
+    "sentences": [
+      { "en": "Let us catch up over coffee next week.", "pl": "Nadróbmy zaległości przy kawie w przyszłym tygodniu." },
+      { "en": "I need to catch up on two seasons of that show.", "pl": "Muszę nadrobić dwa sezony tego serialu." },
+      { "en": "She caught up on her emails during the flight.", "pl": "Nadrobiła maile podczas lotu." },
+      { "en": "Go ahead, I will catch up with you in a minute.", "pl": "Idź, dogonię cię za chwilę." },
+      { "en": "We are still catching up after the outage.", "pl": "Wciąż nadrabiamy zaległości po awarii." }
+    ],
+    "collocations": ["catch up on sth", "catch up with sb"],
+    "rules": "catch up on something = nadrobić zaległości (maile, seriale). catch up with somebody = dogonić kogoś albo spotkać się po czasie. Nie myl z keep up with, które znaczy nadążać na bieżąco.",
+    "mnemonic": "Łapiesz (catch) to, co ci uciekło.",
+    "tags": ["seriale", "phrasal verbs"],
+    "level": "B2"
+  },
+  {
+    "english": "it turns out",
+    "polishDefinition": "okazuje się (że)",
+    "pos": "phrase",
+    "phonetic": "/ɪt tɜːnz aʊt/",
+    "sentences": [
+      { "en": "It turns out the problem was a typo.", "pl": "Okazuje się, że problemem była literówka." },
+      { "en": "It turned out to be much easier than we expected.", "pl": "Okazało się to o wiele łatwiejsze, niż się spodziewaliśmy." },
+      { "en": "As it turns out, nobody read the documentation.", "pl": "Jak się okazuje, nikt nie przeczytał dokumentacji." },
+      { "en": "It turns out he was right all along.", "pl": "Okazuje się, że przez cały czas miał rację." },
+      { "en": "It turned out that somebody had restarted the server.", "pl": "Okazało się, że ktoś zrestartował serwer." }
+    ],
+    "collocations": ["as it turns out", "it turned out that"],
+    "rules": "Po it turns out idzie that (często pomijane) albo to be: It turned out to be a false alarm.",
+    "mnemonic": "Sprawa się obraca (turn) i pokazuje drugą stronę.",
+    "tags": ["seriale", "codzienne"],
+    "level": "B2"
+  },
+  {
+    "english": "stand out",
+    "polishDefinition": "wyróżniać się, rzucać się w oczy",
+    "pos": "phr verb",
+    "phonetic": "/stænd aʊt/",
+    "sentences": [
+      { "en": "Her CV stood out immediately.", "pl": "Jej CV od razu się wyróżniało." },
+      { "en": "What makes this tool stand out?", "pl": "Co wyróżnia to narzędzie?" },
+      { "en": "He stands out in every meeting.", "pl": "Wyróżnia się na każdym spotkaniu." },
+      { "en": "One number in the report stood out.", "pl": "Jedna liczba w raporcie rzucała się w oczy." },
+      { "en": "Bright colours stand out on a dark background.", "pl": "Jasne kolory wyróżniają się na ciemnym tle." }
+    ],
+    "collocations": ["stand out from the crowd", "a standout feature"],
+    "rules": "Wyróżniać się na tle czegoś: stand out from albo stand out among. Rzeczownikowo standout to ktoś lub coś wyjątkowego.",
+    "mnemonic": "Stoisz (stand) na zewnątrz szeregu — nie da się cię przeoczyć.",
+    "tags": ["praca", "phrasal verbs"],
+    "level": "B2"
+  },
+  {
+    "english": "awkward",
+    "polishDefinition": "niezręczny, krępujący; niewygodny w użyciu",
+    "pos": "adj",
+    "phonetic": "/ˈɔːkwəd/",
+    "sentences": [
+      { "en": "There was an awkward silence after his question.", "pl": "Po jego pytaniu zapadła niezręczna cisza." },
+      { "en": "I felt awkward asking for a raise.", "pl": "Czułem się niezręcznie, prosząc o podwyżkę." },
+      { "en": "That was the most awkward meeting of the year.", "pl": "To było najbardziej krępujące spotkanie w tym roku." },
+      { "en": "It is an awkward question, but I have to ask.", "pl": "To niewygodne pytanie, ale muszę je zadać." },
+      { "en": "The new layout is awkward to use on a phone.", "pl": "Nowy układ jest niewygodny w obsłudze na telefonie." }
+    ],
+    "collocations": ["an awkward silence", "feel awkward"],
+    "rules": "O sytuacji: krępująca. O człowieku: niezręczny w kontaktach. O rzeczy: niewygodna w użyciu. Przysłówek awkwardly.",
+    "mnemonic": "AWKWARD wygląda równie dziwacznie, jak znaczy.",
+    "tags": ["seriale", "emocje"],
+    "level": "B2"
+  },
+  {
+    "english": "make up for",
+    "polishDefinition": "wynagrodzić, zrekompensować",
+    "pos": "phr verb",
+    "phonetic": "/meɪk ʌp fə/",
+    "sentences": [
+      { "en": "Let me make up for yesterday and buy you lunch.", "pl": "Pozwól, że wynagrodzę ci wczoraj i postawię lunch." },
+      { "en": "Nothing can make up for losing that data.", "pl": "Nic nie zrekompensuje utraty tych danych." },
+      { "en": "The extra speed makes up for the higher price.", "pl": "Większa szybkość rekompensuje wyższą cenę." },
+      { "en": "He worked all weekend to make up for lost time.", "pl": "Pracował cały weekend, żeby nadrobić stracony czas." },
+      { "en": "She made up for the mistake with a quick fix.", "pl": "Wynagrodziła ten błąd szybką poprawką." }
+    ],
+    "collocations": ["make up for lost time", "make up for it"],
+    "rules": "Trzy słowa razem. Samo make up znaczy co innego: wymyślić (make up a story) albo pogodzić się po kłótni.",
+    "mnemonic": "Dokładasz (make up) brakującą część, żeby wyszło na zero.",
+    "tags": ["relacje", "phrasal verbs"],
+    "level": "B2"
+  },
+  {
+    "english": "hang out",
+    "polishDefinition": "spędzać czas, przesiadywać",
+    "pos": "phr verb",
+    "phonetic": "/hæŋ aʊt/",
+    "sentences": [
+      { "en": "We used to hang out at the same cafe.", "pl": "Kiedyś przesiadywaliśmy w tej samej kawiarni." },
+      { "en": "Do you want to hang out this weekend?", "pl": "Masz ochotę spędzić razem czas w weekend?" },
+      { "en": "They hung out together after work.", "pl": "Spędzali razem czas po pracy." },
+      { "en": "He hangs out with the developers a lot.", "pl": "Dużo przesiaduje z programistami." },
+      { "en": "It is just a place where people hang out.", "pl": "To po prostu miejsce, gdzie ludzie przesiadują." }
+    ],
+    "collocations": ["hang out with sb", "hang out at a place"],
+    "rules": "Nieformalne. Z osobą: hang out with. Z miejscem: hang out at albo in. Forma przeszła: hung out.",
+    "mnemonic": "Wieszasz się (hang) na zewnątrz — bez planu, dla towarzystwa.",
+    "tags": ["seriale", "codzienne"],
+    "level": "B2"
+  },
+  {
+    "english": "take over",
+    "polishDefinition": "przejąć (obowiązki, firmę, kontrolę)",
+    "pos": "phr verb",
+    "phonetic": "/teɪk ˈəʊvə/",
+    "sentences": [
+      { "en": "Can you take over the ticket while I am away?", "pl": "Przejmiesz to zgłoszenie, kiedy mnie nie będzie?" },
+      { "en": "A bigger company took over the startup.", "pl": "Większa firma przejęła ten startup." },
+      { "en": "The night shift takes over at ten.", "pl": "Nocna zmiana przejmuje o dziesiątej." },
+      { "en": "Automation is taking over the boring parts of the job.", "pl": "Automatyzacja przejmuje nudne części tej pracy." },
+      { "en": "She took over as team lead last month.", "pl": "Przejęła rolę liderki zespołu w zeszłym miesiącu." }
+    ],
+    "collocations": ["take over a company", "take over from sb"],
+    "rules": "Przejąć po kimś: take over from somebody. Objąć stanowisko: take over as. Rzeczownik takeover to przejęcie firmy.",
+    "mnemonic": "Bierzesz (take) stery i przejmujesz to, co robił ktoś inny.",
+    "tags": ["praca", "phrasal verbs"],
+    "level": "B2"
+  },
+  {
+    "english": "no big deal",
+    "polishDefinition": "nic wielkiego, drobiazg",
+    "pos": "phrase",
+    "phonetic": "/nəʊ bɪɡ diːl/",
+    "sentences": [
+      { "en": "Do not worry about it, it is no big deal.", "pl": "Nie przejmuj się, to nic wielkiego." },
+      { "en": "Missing one episode is no big deal.", "pl": "Przegapienie jednego odcinka to nic strasznego." },
+      { "en": "He acted like it was no big deal.", "pl": "Zachowywał się, jakby to była błahostka." },
+      { "en": "Restarting the service is no big deal.", "pl": "Restart usługi to drobiazg." },
+      { "en": "Thanks for the help. It was no big deal.", "pl": "Dzięki za pomoc. To była drobnostka." }
+    ],
+    "collocations": ["it is no big deal", "make a big deal out of sth"],
+    "rules": "Potoczna odpowiedź na przeprosiny albo podziękowania. Odwrotność: make a big deal out of something, czyli robić z czegoś aferę.",
+    "mnemonic": "Żaden wielki interes (deal) — nie ma o czym mówić.",
+    "tags": ["seriale", "codzienne"],
+    "level": "B2"
+  },
+  {
+    "english": "point out",
+    "polishDefinition": "zwrócić uwagę na coś, wskazać",
+    "pos": "phr verb",
+    "phonetic": "/pɔɪnt aʊt/",
+    "sentences": [
+      { "en": "She pointed out a mistake in my calculation.", "pl": "Zwróciła uwagę na błąd w moich obliczeniach." },
+      { "en": "It is worth pointing out that the costs will rise.", "pl": "Warto zaznaczyć, że koszty wzrosną." },
+      { "en": "He pointed out the risks before we started.", "pl": "Wskazał zagrożenia, zanim zaczęliśmy." },
+      { "en": "Somebody should point this out to the client.", "pl": "Ktoś powinien zwrócić na to uwagę klientowi." },
+      { "en": "As the report points out, the data is incomplete.", "pl": "Jak wskazuje raport, dane są niekompletne." }
+    ],
+    "collocations": ["point out a mistake", "point out that"],
+    "rules": "Rozdzielny: point it out. Komu zwracasz uwagę: point something out to somebody.",
+    "mnemonic": "Wskazujesz palcem (point) i wyciągasz sprawę na wierzch.",
+    "tags": ["praca", "phrasal verbs"],
+    "level": "B2"
+  },
+  {
+    "english": "roll out",
+    "polishDefinition": "wdrażać stopniowo, wypuszczać (wersję, funkcję)",
+    "pos": "phr verb",
+    "phonetic": "/rəʊl aʊt/",
+    "sentences": [
+      { "en": "We are rolling out the new version to ten percent of users.", "pl": "Wdrażamy nową wersję dla dziesięciu procent użytkowników." },
+      { "en": "The feature was rolled out last Tuesday.", "pl": "Ta funkcja została wdrożona w zeszły wtorek." },
+      { "en": "They roll out updates every second week.", "pl": "Wypuszczają aktualizacje co dwa tygodnie." },
+      { "en": "Let us roll it out slowly and watch the metrics.", "pl": "Wdrażajmy to powoli i obserwujmy metryki." },
+      { "en": "The company will roll out the change across all regions.", "pl": "Firma wdroży tę zmianę we wszystkich regionach." }
+    ],
+    "collocations": ["roll out a feature", "a gradual rollout"],
+    "rules": "Rozdzielny: roll it out. Rzeczownik pisze się łącznie: a rollout. Odwrotność to roll back, czyli wycofać zmianę.",
+    "mnemonic": "Rozwijasz (roll out) dywan przed użytkownikami — kawałek po kawałku.",
+    "tags": ["chmura", "praca"],
+    "level": "B2"
+  },
+  {
+    "english": "outage",
+    "polishDefinition": "awaria, przerwa w działaniu usługi",
+    "pos": "noun",
+    "phonetic": "/ˈaʊtɪdʒ/",
+    "sentences": [
+      { "en": "The outage lasted almost two hours.", "pl": "Awaria trwała prawie dwie godziny." },
+      { "en": "We are investigating a major outage in this region.", "pl": "Badamy poważną awarię w tym regionie." },
+      { "en": "A power outage took down the whole office.", "pl": "Awaria zasilania położyła całe biuro." },
+      { "en": "Customers were notified about the planned outage.", "pl": "Klientów powiadomiono o planowanej przerwie w działaniu." },
+      { "en": "How do we prevent another outage like this?", "pl": "Jak zapobiec kolejnej takiej awarii?" }
+    ],
+    "collocations": ["a service outage", "a power outage"],
+    "rules": "Policzalny: an outage, outages. O zaplanowanej przerwie mówi się maintenance window, o nagłej — outage.",
+    "mnemonic": "Coś jest OUT — wypadło z gry i nie działa.",
+    "tags": ["chmura"],
+    "level": "B2"
+  },
+  {
+    "english": "troubleshoot",
+    "polishDefinition": "diagnozować i usuwać usterki",
+    "pos": "verb",
+    "phonetic": "/ˈtrʌblʃuːt/",
+    "sentences": [
+      { "en": "It took us an hour to troubleshoot the network issue.", "pl": "Zdiagnozowanie problemu z siecią zajęło nam godzinę." },
+      { "en": "Start by troubleshooting the connection.", "pl": "Zacznij od sprawdzenia połączenia." },
+      { "en": "He spent the whole morning troubleshooting the pipeline.", "pl": "Spędził cały ranek na diagnozowaniu pipeline'u." },
+      { "en": "The guide explains how to troubleshoot common errors.", "pl": "Poradnik wyjaśnia, jak usuwać typowe błędy." },
+      { "en": "We troubleshoot problems before they reach users.", "pl": "Diagnozujemy problemy, zanim dotrą do użytkowników." }
+    ],
+    "collocations": ["troubleshoot an issue", "a troubleshooting guide"],
+    "rules": "Rzeczownik i przymiotnik: troubleshooting. Forma przeszła troubleshot brzmi niezręcznie — częściej usłyszysz was troubleshooting.",
+    "mnemonic": "Strzelasz (shoot) do kłopotów (trouble), aż przestaną się ruszać.",
+    "tags": ["chmura", "praca"],
+    "level": "B2"
+  },
+  {
+    "english": "credentials",
+    "polishDefinition": "dane logowania, poświadczenia; kwalifikacje",
+    "pos": "noun",
+    "phonetic": "/krəˈdenʃlz/",
+    "sentences": [
+      { "en": "Never store credentials in the source code.", "pl": "Nigdy nie trzymaj danych logowania w kodzie źródłowym." },
+      { "en": "Your credentials have expired.", "pl": "Twoje poświadczenia wygasły." },
+      { "en": "The app uses temporary credentials for each session.", "pl": "Aplikacja używa tymczasowych poświadczeń dla każdej sesji." },
+      { "en": "He has strong credentials for this role.", "pl": "Ma mocne kwalifikacje na to stanowisko." },
+      { "en": "Rotate your credentials regularly.", "pl": "Regularnie zmieniaj swoje dane uwierzytelniające." }
+    ],
+    "collocations": ["store credentials", "rotate credentials"],
+    "rules": "Prawie zawsze w liczbie mnogiej. Drugie znaczenie dotyczy ludzi: kwalifikacje i doświadczenie.",
+    "mnemonic": "CREDENTIALS od credit — to, czemu system daje wiarę.",
+    "tags": ["chmura"],
+    "level": "B2"
+  },
+  {
+    "english": "grant",
+    "polishDefinition": "przyznać (dostęp, uprawnienia, zgodę)",
+    "pos": "verb",
+    "phonetic": "/ɡrɑːnt/",
+    "sentences": [
+      { "en": "Grant the user read-only access to the bucket.", "pl": "Przyznaj użytkownikowi dostęp tylko do odczytu." },
+      { "en": "Permissions were granted for twenty-four hours.", "pl": "Uprawnienia zostały przyznane na dwadzieścia cztery godziny." },
+      { "en": "The admin granted me access yesterday.", "pl": "Administrator przyznał mi dostęp wczoraj." },
+      { "en": "Only grant what is strictly necessary.", "pl": "Przyznawaj tylko to, co absolutnie konieczne." },
+      { "en": "Access is granted automatically after approval.", "pl": "Dostęp jest przyznawany automatycznie po zatwierdzeniu." }
+    ],
+    "collocations": ["grant access", "grant permissions"],
+    "rules": "grant somebody something albo grant something to somebody. Przeciwieństwo to revoke, czyli odebrać. Jako rzeczownik grant znaczy dotację.",
+    "mnemonic": "Podpis i masz — dostęp przyznany.",
+    "tags": ["chmura"],
+    "level": "B2"
+  },
+  {
+    "english": "mitigate",
+    "polishDefinition": "łagodzić, ograniczać (ryzyko, skutki)",
+    "pos": "verb",
+    "phonetic": "/ˈmɪtɪɡeɪt/",
+    "sentences": [
+      { "en": "Backups mitigate the risk of data loss.", "pl": "Kopie zapasowe ograniczają ryzyko utraty danych." },
+      { "en": "We added a cache to mitigate the load on the database.", "pl": "Dodaliśmy cache, żeby zmniejszyć obciążenie bazy danych." },
+      { "en": "Nothing will fully mitigate that problem.", "pl": "Nic tego problemu całkowicie nie złagodzi." },
+      { "en": "The team proposed steps to mitigate the impact.", "pl": "Zespół zaproponował kroki łagodzące skutki." },
+      { "en": "The risks were mitigated before the migration.", "pl": "Ryzyka zostały ograniczone przed migracją." }
+    ],
+    "collocations": ["mitigate the risk", "mitigating factors"],
+    "rules": "Formalne. Łagodzi się ryzyko albo skutek, nie samą rzecz: mitigate the risk of failure. Rzeczownik: mitigation.",
+    "mnemonic": "Zakładasz rękawicę (mit) i tłumisz uderzenie.",
+    "tags": ["chmura", "formalne"],
+    "level": "B2"
+  },
+  {
+    "english": "legacy",
+    "polishDefinition": "stary, odziedziczony (system); spuścizna",
+    "pos": "adj",
+    "phonetic": "/ˈleɡəsi/",
+    "sentences": [
+      { "en": "We still maintain a legacy system from 2009.", "pl": "Wciąż utrzymujemy stary system z 2009 roku." },
+      { "en": "Legacy code is expensive to change.", "pl": "Zmiana odziedziczonego kodu jest droga." },
+      { "en": "The migration will finally kill the legacy database.", "pl": "Migracja wreszcie uśmierci tę starą bazę danych." },
+      { "en": "He left a real legacy in this company.", "pl": "Zostawił w tej firmie prawdziwą spuściznę." },
+      { "en": "Legacy hardware does not support the new protocol.", "pl": "Stary sprzęt nie obsługuje nowego protokołu." }
+    ],
+    "collocations": ["legacy system", "legacy code"],
+    "rules": "Przed rzeczownikiem: przestarzały, ale wciąż używany. Samodzielnie: spuścizna, dziedzictwo. Nie znaczy legalny.",
+    "mnemonic": "Spadek po poprzednikach — działa, ale nikt nie chce tego dotykać.",
+    "tags": ["chmura", "praca"],
+    "level": "B2"
+  },
+  {
+    "english": "on-call",
+    "polishDefinition": "na dyżurze, pod telefonem",
+    "pos": "adj",
+    "phonetic": "/ˌɒn ˈkɔːl/",
+    "sentences": [
+      { "en": "I am on-call this weekend.", "pl": "W ten weekend jestem na dyżurze." },
+      { "en": "The on-call engineer got the alert at three in the morning.", "pl": "Inżynier na dyżurze dostał alert o trzeciej w nocy." },
+      { "en": "Who is on-call tonight?", "pl": "Kto ma dziś dyżur?" },
+      { "en": "The on-call rotation changes every Monday.", "pl": "Grafik dyżurów zmienia się w każdy poniedziałek." },
+      { "en": "Being on-call means answering the phone at any hour.", "pl": "Bycie na dyżurze oznacza odbieranie telefonu o każdej porze." }
+    ],
+    "collocations": ["on-call rotation", "be on call"],
+    "rules": "Przed rzeczownikiem zwykle z myślnikiem: the on-call engineer. Po czasowniku be częściej bez myślnika: I am on call tonight.",
+    "mnemonic": "Jesteś na zawołanie (call) — telefon leży obok łóżka.",
+    "tags": ["chmura", "praca"],
+    "level": "B2"
+  }
+]

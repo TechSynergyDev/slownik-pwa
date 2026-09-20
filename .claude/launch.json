@@ -1,0 +1,13 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "slowka",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "tools/dev-server.py"
+      ],
+      "port": 5173
+    }
+  ]
+}
