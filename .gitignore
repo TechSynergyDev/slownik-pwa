@@ -1,5 +1,11 @@
+# dane prywatne - NIGDY na GitHuba
 logowanie.txt
+
+# lokalne rzeczy narzedzi
+.claude/
 *.local
 .DS_Store
 node_modules/
+
+# eksporty z aplikacji (moga zawierac caly postep nauki)
 slowka-*.json

@@ -10,7 +10,7 @@
       7. SKOJARZENIA    mnemonik, notatka, tagi
       8. ZROZUMIENIE    definicja, po co, kiedy — z czatu AI, zapisywane w karcie
       9. Z FILMU        cytat z filmu/serialu (tylko jeśli autentyczny) + scena
-     10. CZAT           rozmowa z AI o tym jednym słowie
+     10. CZAT           rozmowa z AI o tym jednym słowie; „Done” w prawym górnym rogu kończy słowo
 
    Nawigacja:
      • przesunięcie palcem w lewo / w prawo — kolejna / poprzednia strona,
@@ -305,6 +305,7 @@ export class Session {
       dots: $('#step-dots'), counter: $('#session-counter'), title: $('#step-title'),
       form: $('#produce-form'), input: $('#produce-input'), verdict: $('#type-verdict'),
       nav: $('#session-nav'), back: $('#btn-back'), next: $('#btn-next'), self: $('#self-row'),
+      finishBtn: $('#btn-finish'),
       chatForm: $('#chat-form'), chatInput: $('#chat-input'),
       done: $('#session-done'), doneTitle: $('#done-title'), summary: $('#done-summary')
     };
@@ -313,7 +314,8 @@ export class Session {
   }
 
   _bind() {
-    this.el.next.addEventListener('click', () => (this.step === LAST ? this.finishWord() : this.slide(1)));
+    this.el.next.addEventListener('click', () => this.slide(1));
+    this.el.finishBtn.addEventListener('click', () => this.finishWord());
     this.el.back.addEventListener('click', () => this.slide(-1));
     this.el.self.addEventListener('click', e => {
       const b = e.target.closest('[data-self]');
@@ -422,9 +424,10 @@ export class Session {
       b.classList.toggle('chosen', b.dataset.self === this.self);
     }
     this.el.back.hidden = s === 0;
-    this.el.next.hidden = s === 0 && !this.self;          // strona 1: dalej dopiero po ocenie
-    this.el.next.classList.toggle('finish', s === LAST);
-    this.el.next.setAttribute('aria-label', s === LAST ? 'Zakończ słowo' : 'Dalej');
+    // strona 1: dalej dopiero po ocenie; ostatnia strona: zamiast strzałki „Done” u góry
+    this.el.next.hidden = (s === 0 && !this.self) || s === LAST;
+    this.el.finishBtn.hidden = s !== LAST;
+    this.el.counter.hidden = s === LAST;
     this.el.chatForm.hidden = name !== 'czat' || !aiConfigured();
 
     if (INSIGHT_PAGES.has(name)) this.ensureInsight();

@@ -349,3 +349,47 @@ zwróci coś innego, niż się spodziewam.
 Formatu `RowKey`, nazw pól `english` / `polishDefinition` / `payload` /
 `updatedAt`, tego że `payload` jest stringiem, nazw zasobów (`wordsTable`,
 PartitionKey `Words`) — i nie dokładać nagłówków CORS w kodzie funkcji.
+
+---
+
+# Aneks 2 — funkcja `chat` (OpenAI)
+
+Twój szkic funkcji `chat` został przerobiony. Gotowy kod jest w
+`backend/chat/index.js` — proszę go nie zastępować wersją z `axios`.
+
+## Co się zmieniło względem Twojego szkicu i dlaczego
+
+- **Bez `axios`** — wbudowany moduł `https`. W edytorze w portalu nie ma
+  `npm install`, a `require('axios')` wywala funkcję przy pierwszym wywołaniu.
+- **Model `gpt-4o-mini`** (zmienna `OPENAI_MODEL` pozwala zmienić) zamiast
+  `gpt-3.5-turbo`.
+- **Historia rozmowy i dane słowa** idą w każdym żądaniu. Twój szkic wysyłał
+  tylko jedno zdanie, więc czat nie wiedział, o jakim słowie rozmawiamy,
+  i nie pamiętał poprzedniej odpowiedzi.
+- **Klucz**: `OPENAI_API_KEY` (nazwa `AI_API_KEY` z Twojego szkicu też działa).
+- **Brak nagłówków CORS w kodzie** — tak jak przy `words`, CORS jest w portalu
+  i obejmuje wszystkie funkcje w Function App.
+- **Adres**: host to `slownik-backend-2026-gvhdbsfjamgtf9c9.polandcentral-01.azurewebsites.net`
+  (nie `slownik-backend-2026.azurewebsites.net`), a na końcu musi być
+  `?code=<klucz funkcji chat>` — to inny klucz niż przy `words`.
+- **Frontend** nie wstawia odpowiedzi modelu przez `innerHTML` bez escapowania
+  — w Twoim szkicu to była dziura XSS.
+
+## Kontrakt
+
+```
+POST /api/chat?code=...
+{ "mode": "explain", "word": { english, polishDefinition, pos, sentences[], collocations[], rules } }
+→ 200 { "insight": { definition, purpose, usage, quote: {text, speaker, source} | null, scene: [{speaker, en, pl}] } }
+
+POST /api/chat?code=...
+{ "mode": "tutor", "word": {...}, "messages": [ { "role": "assistant" | "user", "content": "..." } ] }
+→ 200 { "reply": "..." }      // pusta lista messages = czat sam zadaje pierwsze pytanie
+
+Błędy: 400 brak word.english, 405 metoda inna niż POST,
+       500 brak klucza OpenAI, 502 błąd po stronie OpenAI (w polu error jest powód)
+```
+
+`explain` wymusza `response_format: json_object`. Pole `quote` ma być `null`,
+jeśli model nie jest pewien autentyczności cytatu — nie luzuj tego warunku.
+

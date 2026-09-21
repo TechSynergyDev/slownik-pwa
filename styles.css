@@ -222,7 +222,16 @@ svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke
 body.is-dragging{user-select:none;-webkit-user-select:none}
 @keyframes slideUp{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.session-top{display:flex;align-items:center;gap:12px}
+/* siatka 1fr/auto/1fr: tytuł zostaje na środku niezależnie od szerokości przycisków po bokach */
+.session-top{display:grid;grid-template-columns:minmax(42px,1fr) auto minmax(42px,1fr);align-items:center;gap:12px}
+.session-top #btn-close-session{justify-self:start}
+.top-right{justify-self:end;display:flex;align-items:center}
+.done-top{
+  border:0;font-family:inherit;cursor:pointer;min-height:40px;padding:0 18px;border-radius:99px;
+  font-size:16px;font-weight:650;letter-spacing:-.01em;
+  background:rgba(124,92,255,.18);color:var(--accent);transition:transform .12s ease;
+}
+.done-top:active{transform:scale(.95)}
 .step-head{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px}
 .step-head b{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
 .dots{display:flex;gap:6px}
@@ -356,10 +365,6 @@ mark{background:rgba(124,92,255,.22);color:inherit;padding:1px 3px;border-radius
 }
 .nav-arrow:active{transform:scale(.94)}
 .nav-arrow svg{width:26px;height:26px;stroke-width:2.2}
-.nav-arrow .i-done{display:none}
-.nav-arrow.finish{background:linear-gradient(135deg,#22c55e,var(--good))}
-.nav-arrow.finish .i-next{display:none}
-.nav-arrow.finish .i-done{display:block}
 
 /* strony 8–9: objaśnienie z AI */
 .explain{display:flex;flex-direction:column;gap:6px}

@@ -73,6 +73,49 @@ wklej zawartość pliku → Save.
 
 ---
 
+## Czat AI — podłączenie (strony 8–10)
+
+Strony **Zrozumienie**, **Z filmu / serialu** i **Czat** korzystają z OpenAI przez
+osobną funkcję w Twoim Function App. Klucz OpenAI zostaje w Azure — nigdy nie
+trafia do aplikacji ani na GitHuba.
+
+1. **Klucz OpenAI** — platform.openai.com → API keys → Create. Od razu ustaw
+   **miesięczny limit wydatków** (Settings → Limits): klucz funkcji w aplikacji
+   jest widoczny w źródle strony, więc ktoś, kto go zdobędzie, mógłby wydawać
+   Twoje kredyty.
+2. **Zmienna w Azure** — Portal → `slownik-backend-2026` → Settings →
+   Environment variables → dodaj `OPENAI_API_KEY` = Twój klucz → Apply.
+   (Działa też nazwa `AI_API_KEY`, jeśli już ją dodałeś. Model można zmienić
+   zmienną `OPENAI_MODEL`, domyślnie `gpt-4o-mini`.)
+3. **Nowa funkcja** — Functions → Create → **HTTP trigger** → nazwa `chat`,
+   Authorization level: **Function**.
+4. **Kod** — `chat` → Code + Test → `index.js` → wklej całą zawartość
+   [`backend/chat/index.js`](backend/chat/index.js) → Save. Niczego nie trzeba
+   instalować — funkcja nie używa `axios`.
+5. **Klucz funkcji** — `chat` → Function Keys → skopiuj `default`. To **inny**
+   klucz niż ten od `words`.
+6. **Aplikacja** — w [`js/config.js`](js/config.js) zamień
+   `WKLEJ_TUTAJ_KLUCZ_FUNKCJI_CHAT` na skopiowany klucz i wrzuć plik na GitHuba.
+7. **CORS** — nic do zrobienia: lista CORS dotyczy całego Function App, więc
+   obejmuje też nową funkcję.
+
+Objaśnienie słowa (strony 8–9) generuje się **raz** — w tle, gdy otwierasz
+słowo — i zapisuje w karcie, razem z nią synchronizuje się z Azure. Kolejne
+podejścia do tego samego słowa nie kosztują już nic.
+
+Test z terminala (wstaw swój klucz funkcji `chat`):
+
+```bash
+curl -X POST "https://slownik-backend-2026-gvhdbsfjamgtf9c9.polandcentral-01.azurewebsites.net/api/chat?code=KLUCZ" -H "Content-Type: application/json" -d '{"mode":"tutor","word":{"english":"drawback","polishDefinition":"wada"},"messages":[]}'
+```
+
+Poprawna odpowiedź to `{"reply":"..."}` z pierwszym pytaniem czatu.
+
+**O cytatach z filmów:** model ma polecenie podawać cytat tylko wtedy, gdy jest
+pewien, że jest autentyczny — w przeciwnym razie strona pokazuje samą scenę.
+Modele językowe potrafią jednak zmyślać cytaty, dlatego przy każdym jest
+znaczek **AI**. Traktuj go jako ciekawostkę, nie źródło.
+
 ## Ekran główny
 
 1. **Dzisiejsza data** — pełna, z dniem tygodnia.
@@ -88,50 +131,49 @@ wklej zawartość pliku → Save.
    Nie ma etykiet „nowe" i „powtórka": to rozróżnienie należy do algorytmu,
    nie do Ciebie.
 
-## Pięć ekranów nauki
+## Dziesięć stron nauki
 
 Jeden przycisk **„Nauka słowa"** uruchamia zawsze tę samą ścieżkę:
 
-| # | Ekran | Co robisz |
+| # | Strona | Co robisz |
 |---|---|---|
-| 1 | **Słowo** | angielskie słowo, wymowa i tłumaczenie; oceniasz: *znam / kojarzę / nie znam* |
-| 2 | **W zdaniach** | do pięciu zdań z tym słowem, pod każdym tłumaczenie w nawiasie |
+| 1 | **Słowo** | słowo, wymowa, znaczenia (różne znaczenia w osobnych liniach od myślnika); oceniasz: **znam / kojarzę / nie znam** |
+| 2 | **W zdaniach** | zdania pojedynczo, jak relacje na Instagramie — angielskie z tłumaczeniem pod spodem |
 | 3 | **Wpisz słowo** | zdanie z luką — słowo trzeba wystukać z klawiatury |
-| 4 | **Zasady** | jak się tego słowa używa: składnia, kolokacje, typowe pułapki |
-| 5 | **Skojarzenia** | mnemonik, Twoja notatka, tagi — i na dole *jeszcze raz / umiem / nie umiem* |
+| 4 | **Po polsku** | zdania pojedynczo, tylko po polsku, w innej kolejności; znaczek **EN** odsłania oryginał |
+| 5 | **Dopasowania** | z jakimi słowami to słowo się łączy |
+| 6 | **Zasady** | składnia, rejestr, pułapki |
+| 7 | **Skojarzenia** | mnemonik, notatka, tagi |
+| 8 | **Zrozumienie** | definicja · po co się go używa · kiedy się go używa (z czatu AI) |
+| 9 | **Z filmu / serialu** | cytat z filmu lub serialu, jeśli istnieje autentyczny, i krótka scena z użyciem słowa (z czatu AI) |
+| 10 | **Czat** | rozmowa z AI o tym jednym słowie: czat pyta, Ty odpowiadasz, on prostuje i dopowiada |
 
-Między ekranami przechodzisz strzałką w prawym dolnym rogu, wracasz przyciskiem
-*Wstecz*. Kropki u góry pokazują, na którym ekranie jesteś.
+**Poruszanie się:**
 
-**Trzy przyciski na końcu:**
+- **przesunięcie palcem w lewo / w prawo** — następna / poprzednia strona,
+- **na stronach 2 i 4 tapnięcie z boku** — jak w relacjach: lewa jedna trzecia
+  ekranu = poprzednie zdanie, reszta = następne. Za ostatnim zdaniem tapnięcie
+  przechodzi na kolejną stronę, przed pierwszym — na poprzednią,
+- **na stronie 1 przesunięcie w prawo** do mniej więcej połowy ekranu zamyka
+  naukę i wraca na pulpit,
+- na ostatniej stronie strzałka zamienia się w **ptaszek** — kończy słowo.
 
-- **Jeszcze raz** — nie kończy słowa. Puszcza je przez te same pięć ekranów od
-  nowa: przykłady w innej kolejności, inna luka do wpisania. Możesz tak zapętlić
-  słowo, ile razy chcesz, zanim je zamkniesz.
-- **Umiem** — słowo wchodzi do harmonogramu z odstępem z modelu pamięci.
-- **Nie umiem** — wraca za minutę, jeszcze w tej sesji.
+### Ocena — tylko ze strony 1
 
-Aplikacja nie pyta osobno „czy było trudne" — wyciąga to z tego, co zrobiłeś:
+Jedynym sygnałem dla algorytmu powtórek jest odpowiedź na stronie 1:
 
-| Co się wydarzyło | Jak liczy to model |
-|---|---|
-| *znam* na wejściu + bezbłędne wpisanie + *umiem* za pierwszym podejściem | łatwe — najdłuższy odstęp |
-| *umiem* bez powtarzania | dobre — normalny odstęp |
-| *umiem* po naciśnięciu *jeszcze raz* | trudne — krótszy odstęp, trudność słowa rośnie |
-| *nie umiem* | wpadka — trwałość śladu spada |
+| Wybór | Ocena w modelu | Nowe słowo wraca po | Znane słowo |
+|---|---|---|---|
+| **znam** | dobre | 25 minutach, potem ~4 dni | normalny odstęp |
+| **kojarzę** | trudne | 6 minutach | krótszy odstęp, trudność rośnie |
+| **nie znam** | wpadka | minucie | trwałość śladu spada |
 
-Pod przyciskami widać, na kiedy wypadnie kolejna powtórka, więc nic nie dzieje
-się za Twoimi plecami.
+Ocena zapisuje się **od razu po wyborze** — nawet jeśli potem zamkniesz naukę
+w połowie, powtórka się liczy. Jeśli wrócisz na stronę 1 i wybierzesz coś
+innego, ocena zostaje **poprawiona** (liczona od stanu sprzed otwarcia słowa),
+a nie dopisana drugi raz. Dalej ze strony 1 da się przejść dopiero po wyborze.
 
-Ekran 3 jest tolerancyjny na odmianę: w zdaniu „We ___ more in one week"
-poprawne jest zarówno *accomplish*, jak i *accomplished*, bo tej formy wymaga
-luka. Drobna literówka daje „prawie", nie błąd.
-
-Zdanie do wpisywania zmienia się przy każdej powtórce i przy każdym *jeszcze
-raz* — nie uczysz się jednej formułki, tylko słowa w różnych kontekstach.
-Przy pięciu zdaniach „inne przykłady" znaczą inną kolejność i inną lukę; jeśli
-dopiszesz słowu więcej niż pięć zdań, kolejne podejście pokaże po prostu
-następną piątkę.
+Wynik wpisywania na stronie 3 i rozmowa z czatem **nie wpływają** na harmonogram.
 
 ## Jak system dobiera słowo
 
@@ -155,12 +197,11 @@ Uczenie się naraz rzeczy podobnych kończy się myleniem ich ze sobą.
 
 | Moment | Co się dzieje |
 |---|---|
-| Pierwsze spotkanie, *umiem* | wraca za **25 minut** — mniej więcej następna przerwa |
+| Pierwsze spotkanie, *znam* | wraca za **25 minut** — mniej więcej następna przerwa |
 | Po tym drugim przypomnieniu | **~4 dni** |
 | Dalej | ~15 dni → ~2 miesiące → ~5 miesięcy → ~14 miesięcy |
-| *Jeszcze raz*, potem *umiem* | krótszy odstęp, trudność słowa rośnie |
-| *Nie umiem* | wraca za minutę, trwałość śladu spada, kolejne odstępy są krótsze |
-| *umiem* po bezbłędnym przejściu (z *znam* na wejściu) | pomija krok 25-minutowy, od razu ~14 dni |
+| *Kojarzę* | krótszy odstęp, trudność słowa rośnie |
+| *Nie znam* | wraca za minutę, trwałość śladu spada, kolejne odstępy są krótsze |
 
 Te liczby nie są wpisane z ręki — wychodzą z modelu pamięci. Odstęp dobierany
 jest tak, aby w momencie powtórki szansa przypomnienia wynosiła **dokładnie
@@ -179,8 +220,8 @@ Domyślnie **jedna sesja = jedno słowo** — pod naukę w przerwie w pracy.
 Po odpowiedzi widzisz ekran podsumowania z dwoma przyciskami: *Kolejne słowo*
 (jeśli coś jeszcze czeka) i *Wróć*.
 
-Wyjątek: ocena **nie umiem** wraca tym samym słowem jeszcze w tej samej sesji —
-to jest sens tej oceny.
+Po ocenie **nie znam** słowo wraca za minutę — więc następne naciśnięcie
+„Nauka słowa" najpewniej da Ci je jeszcze raz.
 
 Jeśli kiedyś zechcesz uczyć się seriami, wyłącz *Jedno słowo na sesję*
 w Ustawieniach; wtedy obowiązuje limit *Maks. kart w sesji*.
@@ -198,10 +239,13 @@ js/
   fsrs.js           algorytm powtórek
   db.js             IndexedDB: karty, log powtórek, ustawienia
   session.js        pętla nauki — najważniejszy plik
+  gestures.js       przesuwanie palcem (strony, arkusze)
+  ai.js             klient funkcji `chat` (objaśnienia + czat)
   views.js          rysowanie ekranów
   sync.js           synchronizacja z Azure
   seed.js           pakiet startowy: 40 słów B2, po 5 zdań, zasady i skojarzenia
-backend/index.js    zaktualizowana funkcja Azure (do wklejenia w portalu)
+backend/index.js    funkcja Azure `words` (do wklejenia w portalu)
+backend/chat/       funkcja Azure `chat` — objaśnienia i czat przez OpenAI
 tools/make-icons.mjs generator ikon (node tools/make-icons.mjs)
 tools/dev-server.py  serwer deweloperski bez cache'owania
 ```
@@ -222,13 +266,18 @@ tools/dev-server.py  serwer deweloperski bez cache'owania
   rules: 'Nierozdzielny: come across something…',   // ekran 4
   mnemonic: 'ACROSS — idziesz w poprzek i wpadasz…', // ekran 5
   note: '', tags: ['phrasal verbs'],
+  insight: {                      // strony 8–9, generowane raz przez czat AI
+    definition, purpose, usage,
+    quote: { text, speaker, source } | null,
+    scene: [{ speaker, en, pl }]
+  },
   srs: { main: { status, S, D, due, last, step, reps, lapses } },
   createdAt, updatedAt, dirty, deleted
 }
 ```
 
-Jeden stan SRS na słowo, bo jedno przejście przez pięć ekranów sprawdza i
-rozpoznawanie (ekran 1–2), i produkcję (ekran 3). Starsze karty z dwoma
+Jeden stan SRS na słowo, bo jedno przejście przez strony sprawdza i
+rozpoznawanie (strony 1–2), i produkcję (strony 3–4). Starsze karty z dwoma
 osobnymi kierunkami migrują się automatycznie przy pierwszym uruchomieniu
 (baza w wersji 2) — zostaje mocniejszy z dwóch śladów.
 
@@ -241,10 +290,12 @@ osobnymi kierunkami migrują się automatycznie przy pierwszym uruchomieniu
 | Aktywne przypominanie | Ekran 3 wymaga wystukania słowa z klawiatury, bez podpowiedzi |
 | Powtórki rozłożone w czasie | FSRS wylicza termin z modelu pamięci, nie ze sztywnej tabelki |
 | Uczenie w kontekście | Formularz nie przyjmie słowa bez zdania, które je zawiera |
-| Testowanie dwukierunkowe | Rozpoznawanie (ekran 1–2) i produkcja (ekran 3) w jednym przejściu |
+| Testowanie dwukierunkowe | Rozpoznawanie (strony 1–2) i produkcja (strony 3–4) w jednym przejściu |
 | Głębokie przetwarzanie | Osobne ekrany na zasady użycia i skojarzenia — nie doklejka do fiszki |
-| Samoocena przed nauką | Ekran 1 pyta „znam / kojarzę / nie znam" — to kalibruje ocenę końcową |
-| Powtórzenie na żądanie | *Jeszcze raz* puszcza słowo od nowa z innymi przykładami |
+| Samoocena przed nauką | Strona 1 pyta „znam / kojarzę / nie znam" — to kalibruje ocenę końcową |
+| Tłumaczenie zwrotne | Strona 4: polskie zdanie → angielskie w myślach, dopiero potem podgląd |
+| Wyjaśnienie w pełnym zdaniu | Strona 8: definicja, cel i kontekst użycia zamiast samego tłumaczenia |
+| Aktywne przetwarzanie | Strona 10: tłumaczysz czatowi słowo własnymi słowami, on prostuje |
 | Nauka w krótkich porcjach | Jedno słowo na sesję — kilka minut w przerwie zamiast maratonu |
 | Powtórzenie świeżego śladu | Nowe słowo wraca tego samego dnia po 25 minutach |
 | Wielokrotny kontekst | Pięć różnych zdań na słowo, a do wpisywania za każdym razem inne |
