@@ -182,15 +182,22 @@ export function renderWordDetail(card) {
   const sentences = card.sentences || [];
 
   return `
-    <div class="sheet-handle"></div>
-    <div class="detail-head">
-      <div>
-        <b>${escapeHtml(card.english)}</b>
-        <small>${escapeHtml(card.polishDefinition)}${card.phonetic ? ' · ' + escapeHtml(card.phonetic) : ''}</small>
+    <div class="sheet-head">
+      <div class="sheet-handle"></div>
+      <div class="detail-head">
+        <div>
+          <b>${escapeHtml(card.english)}</b>
+          <small>${escapeHtml(card.polishDefinition)}${card.phonetic ? ' · ' + escapeHtml(card.phonetic) : ''}</small>
+        </div>
+        <div class="detail-tools">
+          <button class="icon-btn" data-act="speak" aria-label="Przeczytaj">
+            <svg viewBox="0 0 24 24"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M16 9a4 4 0 0 1 0 6"/><path d="M19 6a8 8 0 0 1 0 12"/></svg>
+          </button>
+          <button class="icon-btn" data-close-sheet aria-label="Zamknij">
+            <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+        </div>
       </div>
-      <button class="icon-btn" data-act="speak" aria-label="Przeczytaj">
-        <svg viewBox="0 0 24 24"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M16 9a4 4 0 0 1 0 6"/><path d="M19 6a8 8 0 0 1 0 12"/></svg>
-      </button>
     </div>
 
     ${sentences.length ? `<ol class="sentence-list">${sentences.map(x => `

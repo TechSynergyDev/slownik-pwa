@@ -10,6 +10,7 @@ import { Session, buildQueue, introducedToday } from './session.js';
 import { renderToday, weekStrip, upcomingList, renderLibrary, collectTags, renderWordDetail, renderStats } from './views.js';
 import { sync, pushCardQuietly, lastSync } from './sync.js';
 import { seedToCards } from './seed.js';
+import { attachDrag, passed } from './gestures.js';
 
 const state = {
   cards: [],
@@ -265,6 +266,43 @@ async function wordAction(act) {
   }
 }
 
+/* --------------------------------------------------------------- arkusze */
+
+/**
+ * Arkusz z dołu ekranu da się zamknąć na trzy sposoby: krzyżykiem w nagłówku,
+ * tapnięciem w przyciemnione tło albo ściągając nagłówek palcem w dół.
+ */
+function setupSheet(sheet, close) {
+  const panel = sheet.querySelector('.sheet-panel');
+
+  sheet.addEventListener('click', e => {
+    if (e.target === sheet || e.target.closest('[data-close-sheet]')) close();
+  });
+
+  attachDrag(panel, {
+    axis: 'y',
+    shouldStart: e => !!e.target.closest('.sheet-head') && !e.target.closest('button'),
+    onMove: dy => {
+      panel.style.transition = 'none';
+      panel.style.transform = `translateY(${Math.max(0, dy)}px)`;
+    },
+    onEnd: (dy, v) => {
+      if (dy > 0 && passed(dy, v, panel.offsetHeight, 0.25)) {
+        panel.style.transition = 'transform .2s ease-in';
+        panel.style.transform = 'translateY(100%)';
+        setTimeout(() => {
+          close();
+          panel.style.transition = '';
+          panel.style.transform = '';
+        }, 200);
+        return;
+      }
+      panel.style.transition = 'transform .25s cubic-bezier(.2,.8,.2,1)';
+      panel.style.transform = '';
+    }
+  });
+}
+
 /* ------------------------------------------------------------ ustawienia */
 
 function fillSettings() {
@@ -446,17 +484,24 @@ async function init() {
   $('#btn-sync').addEventListener('click', () => doSync());
 
   // arkusz słowa
+  const closeSettings = () => { $('#sheet-settings').hidden = true; };
+  setupSheet($('#sheet-word'), closeWord);
   $('#sheet-word').addEventListener('click', e => {
-    if (e.target.id === 'sheet-word') return closeWord();
     const a = e.target.closest('[data-act]');
     if (a) wordAction(a.dataset.act);
   });
 
   // ustawienia
+  setupSheet($('#sheet-settings'), closeSettings);
   $('#btn-settings').addEventListener('click', () => { fillSettings(); $('#sheet-settings').hidden = false; });
-  $('#btn-close-settings').addEventListener('click', () => { $('#sheet-settings').hidden = true; });
-  $('#sheet-settings').addEventListener('click', e => {
-    if (e.target.id === 'sheet-settings') $('#sheet-settings').hidden = true;
+  $('#btn-close-settings').addEventListener('click', closeSettings);
+
+  // Escape na komputerze zamyka to, co leży na wierzchu
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if (!$('#sheet-word').hidden) return closeWord();
+    if (!$('#sheet-settings').hidden) return closeSettings();
+    if (!$('#session').hidden) session.close();
   });
   $$('#sheet-settings input, #sheet-settings select').forEach(el =>
     el.addEventListener('change', onSettingChange));

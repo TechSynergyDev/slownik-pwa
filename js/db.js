@@ -114,6 +114,8 @@ export function makeCard(data = {}) {
     note: data.note || '',
     tags: data.tags || [],
     level: data.level || 'B2',
+    // objaśnienie z czatu AI (definicja, po co, kiedy, cytat/scena) — generowane raz
+    insight: data.insight || null,
     srs: data.srs && data.srs.main ? data.srs : { main: (data.srs && data.srs.recall) || newState() },
     createdAt: data.createdAt || now,
     updatedAt: data.updatedAt || now,
@@ -169,6 +171,14 @@ export async function removeCard(id) {
 export async function logReview(entry) {
   const store = await tx('reviews', 'readwrite');
   return wrap(store.add({ ts: Date.now(), ...entry }));
+}
+
+/** Poprawka wpisu — gdy na stronie 1 zmienisz zdanie co do oceny. */
+export async function updateReview(id, patch) {
+  const store = await tx('reviews', 'readwrite');
+  const row = await wrap(store.get(id));
+  if (!row) return;
+  return wrap(store.put({ ...row, ...patch, id }));
 }
 
 export async function reviewsSince(ts) {
