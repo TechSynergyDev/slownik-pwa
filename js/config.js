@@ -8,7 +8,7 @@ export const AZURE_API_URL =
 // UWAGA: klucz funkcji `chat` jest INNY niż klucz `words` — skopiuj go z Portalu:
 // Function App → Functions → chat → Function Keys → default, i wklej za `code=`.
 export const AI_API_URL =
-  'https://slownik-backend-2026-gvhdbsfjamgtf9c9.polandcentral-01.azurewebsites.net/api/chat?code=WKLEJ_TUTAJ_KLUCZ_FUNKCJI_CHAT';
+  'https://slownik-backend-2026-gvhdbsfjamgtf9c9.polandcentral-01.azurewebsites.net/api/chat?code=bNz2hHEuiukhkcrHmABjhb-qgZZih-bMakB7o_yEkOWzAzFu8Kdz5Q==';
 
 export const aiConfigured = () => !AI_API_URL.includes('WKLEJ_TUTAJ');
 
@@ -31,10 +31,10 @@ export const TIPS = [
   'Słowo bez zdania to martwe słowo. Zapamiętujesz wzorzec użycia, nie hasło ze słownika.',
   'Lepiej 10 minut dziennie niż 70 minut raz w tygodniu. Rozłożenie w czasie wygrywa z ilością.',
   'Jeśli coś przychodzi Ci z trudem, to znak, że powtórka działa. Łatwe powtórki niewiele uczą.',
-  'Tryb produktywny (PL → EN) jest trudniejszy niż rozpoznawanie — i dlatego uczy najwięcej.',
+  'Strona „Po polsku” jest trudniejsza niż czytanie po angielsku — i dlatego uczy najwięcej.',
   'Dopisz własną notatkę albo skojarzenie. Im głębiej przetworzysz słowo, tym trwalszy ślad.',
   'Nie ucz się synonimów tego samego dnia — mieszają się. Rozdziel je w czasie.',
   'Zapisuj kolokacje: „make a decision”, nie „make” i „decision” osobno.',
-  'Ocena „Znowu” nie jest porażką. To informacja dla algorytmu, kiedy wrócić do słowa.',
+  'Odpowiedź „nie znam” nie jest porażką. To informacja dla algorytmu, kiedy wrócić do słowa.',
   'Czytaj zdanie na głos. Zaangażowanie wymowy dokłada kolejny kanał pamięciowy.'
 ];
