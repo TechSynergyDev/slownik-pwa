@@ -1,7 +1,7 @@
 /* Service worker: aplikacja ma działać w metrze i w samolocie.
    Strategia: cache-first dla powłoki aplikacji, sieć dla API Azure. */
 
-const CACHE = 'slowka-v2';
+const CACHE = 'slowka-v4';
 const NET_TIMEOUT = 3000;   // po tylu ms uznajemy sieć za zbyt wolną
 const SHELL = [
   './',
@@ -14,6 +14,8 @@ const SHELL = [
   './js/db.js',
   './js/fsrs.js',
   './js/session.js',
+  './js/gestures.js',
+  './js/ai.js',
   './js/views.js',
   './js/sync.js',
   './js/seed.js',

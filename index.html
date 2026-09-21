@@ -101,16 +101,16 @@
           <em class="hint" id="hint-sentence">Każde zdanie musi zawierać to słowo.</em>
         </div>
         <label class="field">
-          <span>Kolokacje / typowe użycia</span>
+          <span>Dopasowania / kolokacje <i>strona 5</i></span>
           <input id="f-colloc" placeholder="come across as rude, come across a problem">
           <em class="hint">Oddzielaj przecinkami</em>
         </label>
         <label class="field">
-          <span>Zasady użycia <i>ekran 4</i></span>
+          <span>Zasady użycia <i>strona 6</i></span>
           <textarea id="f-rules" rows="3" placeholder="Czasownik nierozdzielny: come across sth, nigdy come sth across. W znaczeniu wrażenia zawsze z as: come across as shy."></textarea>
         </label>
         <label class="field">
-          <span>Skojarzenie / mnemonik <i>ekran 5</i></span>
+          <span>Skojarzenie / mnemonik <i>strona 7</i></span>
           <input id="f-mnemonic" placeholder="across = idę przez coś i na to wpadam">
         </label>
         <label class="field">
@@ -205,16 +205,19 @@
       <button class="self no" data-self="nieznam"><b>Nie znam</b></button>
     </div>
 
-    <div class="final-row" id="final-row" hidden>
-      <button class="rate hard" data-final="again"><b>Jeszcze raz</b><span></span></button>
-      <button class="rate good" data-final="know"><b>Umiem</b><span></span></button>
-      <button class="rate again" data-final="dontknow"><b>Nie umiem</b><span></span></button>
-    </div>
+    <form class="chat-form" id="chat-form" hidden>
+      <textarea id="chat-input" rows="1" placeholder="Twoja odpowiedź…" enterkeyhint="send"
+                autocapitalize="sentences" spellcheck="true"></textarea>
+      <button class="chat-send" type="submit" aria-label="Wyślij">
+        <svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+      </button>
+    </form>
 
     <div class="nav-bottom">
       <button class="btn ghost small" id="btn-back" hidden>Wstecz</button>
       <button class="nav-arrow" id="btn-next" aria-label="Dalej">
-        <svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        <svg class="i-next" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        <svg class="i-done" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
       </button>
     </div>
   </div>
@@ -233,8 +236,15 @@
 <!-- ---------- USTAWIENIA ---------- -->
 <div class="sheet" id="sheet-settings" hidden>
   <div class="sheet-panel">
-    <div class="sheet-handle"></div>
-    <h2>Ustawienia</h2>
+    <div class="sheet-head">
+      <div class="sheet-handle"></div>
+      <div class="sheet-title-row">
+        <h2>Ustawienia</h2>
+        <button class="icon-btn" data-close-sheet aria-label="Zamknij">
+          <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+    </div>
     <label class="field">
       <span>Nowe słowa dziennie</span>
       <input type="number" id="s-new" min="0" max="40">
