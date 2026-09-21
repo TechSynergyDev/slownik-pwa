@@ -4,6 +4,14 @@
 export const AZURE_API_URL =
   'https://slownik-backend-2026-gvhdbsfjamgtf9c9.polandcentral-01.azurewebsites.net/api/words?code=F1Rs4NMbIyvgb568ql7bfDhJyFEDPPceI0QUdcHJLYeIAzFuZApD1Q==';
 
+// Funkcja `chat` w tym samym Function App (objaśnienia słów + czat o słowie).
+// UWAGA: klucz funkcji `chat` jest INNY niż klucz `words` — skopiuj go z Portalu:
+// Function App → Functions → chat → Function Keys → default, i wklej za `code=`.
+export const AI_API_URL =
+  'https://slownik-backend-2026-gvhdbsfjamgtf9c9.polandcentral-01.azurewebsites.net/api/chat?code=WKLEJ_TUTAJ_KLUCZ_FUNKCJI_CHAT';
+
+export const aiConfigured = () => !AI_API_URL.includes('WKLEJ_TUTAJ');
+
 export const DB_NAME = 'slownikDB';
 export const DB_VERSION = 2;   // 2: lista zdań zamiast jednego + zasady + jeden stan SRS
 
