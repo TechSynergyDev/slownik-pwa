@@ -1,7 +1,7 @@
 /* ===========================================================================
    Azure Function `chat` — Node.js, model programowania v3 (jak `words`).
 
-   Dwa tryby, wybierane polem `mode`:
+   Cztery tryby, wybierane polem `mode`:
 
    1. "explain" — objaśnienie jednego słowa (strony „Zrozumienie" i „Z filmu"):
         POST { mode: "explain", word: {...} }
@@ -11,6 +11,14 @@
         POST { mode: "tutor", word: {...}, messages: [{ role, content }, ...] }
         →    { reply: "..." }
       Pusta lista `messages` = początek rozmowy: czat sam zadaje pierwsze pytanie.
+
+   3. "free"   — czat ogólny, bez konkretnego słowa (ikona czatu na pulpicie):
+        POST { mode: "free", messages: [...] }
+        →    { reply: "..." }
+
+   4. "ping"   — nic nie robi, tylko budzi funkcję (plan Consumption zasypia):
+        POST { mode: "ping" }  →  { ok: true }
+      Aplikacja woła to przy otwarciu słowa, żeby czat nie kazał czekać 20 s.
 
    Czym to się różni od szkicu z Gemini:
      • bez `axios` — wbudowany moduł `https`, więc nic nie trzeba instalować
@@ -160,7 +168,7 @@ Jak prowadzisz rozmowę:
 - Co jakiś czas prosisz, żeby uczeń ułożył własne zdanie z tym słowem, i je poprawiasz.
 - Jeśli uczeń sam o coś pyta — odpowiadasz, a potem wracasz do słowa.
 - Jeśli rozmowa dopiero się zaczyna, witasz się jednym krótkim zdaniem i od razu zadajesz pierwsze pytanie.
-- Piszesz po polsku, przykłady po angielsku. Najwyżej około 80 słów w odpowiedzi — to ekran telefonu.
+- Piszesz po polsku, przykłady po angielsku. Najwyżej około 60 słów w odpowiedzi — to ekran telefonu, a krótka odpowiedź przychodzi szybciej.
 - Bez wstępów typu „Świetne pytanie!". Nie zmieniasz tematu na inne słowa.`;
 }
 
@@ -173,10 +181,40 @@ async function tutor(word, messages) {
     const out = await openai({
         model: MODEL,
         temperature: 0.6,
-        max_tokens: 400,
+        max_tokens: 300,
         messages: [
             { role: "system", content: tutorPrompt(word) },
             ...(history.length ? history : [{ role: "user", content: "Zaczynamy." }])
+        ]
+    });
+    return String(out.choices[0].message.content || "").trim();
+}
+
+/* ------------------------------------------------------------ tryb: czat ogólny */
+
+const FREE_PROMPT = `Jesteś korepetytorem angielskiego dla Polaka na poziomie B2, który uczy się też do pracy jako cloud engineer.
+Odpowiadasz na jego pytania o angielski: słownictwo, gramatykę, różnice między słowami, zwroty z pracy w IT i chmurze, poprawianie jego zdań.
+
+Zasady:
+- Piszesz po polsku, przykłady po angielsku.
+- Najwyżej około 80 słów — to ekran telefonu. Jeśli temat jest szerszy, dajesz zwięzłą odpowiedź i pytasz, co rozwinąć.
+- Jeśli uczeń napisze zdanie po angielsku, poprawiasz je i krótko mówisz dlaczego.
+- Bez wstępów typu „Świetne pytanie!". Konkret od pierwszego zdania.
+- Jeśli rozmowa dopiero się zaczyna, witasz się jednym zdaniem i pytasz, z czym pomóc.`;
+
+async function free(messages) {
+    const history = (Array.isArray(messages) ? messages : [])
+        .filter(m => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string")
+        .slice(-MAX_HISTORY)
+        .map(m => ({ role: m.role, content: clip(m.content, MAX_CHARS) }));
+
+    const out = await openai({
+        model: MODEL,
+        temperature: 0.6,
+        max_tokens: 400,
+        messages: [
+            { role: "system", content: FREE_PROMPT },
+            ...(history.length ? history : [{ role: "user", content: "Cześć." }])
         ]
     });
     return String(out.choices[0].message.content || "").trim();
@@ -189,6 +227,11 @@ module.exports = async function (context, req) {
         context.res = { status: 405, body: { error: "Tylko POST" } };
         return;
     }
+    // budzenie funkcji — bez OpenAI, więc nic nie kosztuje i działa nawet bez klucza
+    if ((req.body || {}).mode === "ping") {
+        context.res = { status: 200, body: { ok: true } };
+        return;
+    }
     if (!API_KEY) {
         context.res = {
             status: 500,
@@ -199,12 +242,17 @@ module.exports = async function (context, req) {
 
     const body = req.body || {};
     const word = body.word || {};
-    if (!word.english) {
+    if (body.mode !== "free" && !word.english) {
         context.res = { status: 400, body: { error: "Brak słowa (word.english)" } };
         return;
     }
 
     try {
+        if (body.mode === "free") {
+            const reply = await free(body.messages);
+            context.res = { status: 200, body: { reply } };
+            return;
+        }
         if (body.mode === "explain") {
             const insight = await explain(word);
             context.res = { status: 200, body: { insight } };

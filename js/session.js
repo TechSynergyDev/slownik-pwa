@@ -26,16 +26,16 @@
 import { $, escapeHtml, markInSentence, canBlank, matchedForm, gradeTyped, speak, startOfDay } from './util.js';
 import { schedule, newState, currentRetrievability, RATING } from './fsrs.js';
 import { putCard, logReview, updateReview, bumpStreak, reviewsSince } from './db.js';
-import { attachDrag, passed, wait } from './gestures.js';
-import { explainWord, tutorReply, aiConfigured } from './ai.js';
+import { attachDrag, passed, wait, hideKeyboardOnScrollUp } from './gestures.js';
+import { explainWord, tutorReply, aiConfigured, warmUp } from './ai.js';
 
 export const STEPS = [
   'slowo', 'zdania', 'wpisz', 'polsku', 'dopasowania',
-  'zasady', 'skojarzenia', 'zrozumienie', 'film', 'czat'
+  'zasady', 'skojarzenia', 'zrozumienie', 'film', 'czat', 'notatki'
 ];
 const STEP_TITLES = [
   'Słowo', 'W zdaniach', 'Wpisz słowo', 'Po polsku', 'Dopasowania',
-  'Zasady', 'Skojarzenia', 'Zrozumienie', 'Z filmu / serialu', 'Czat'
+  'Zasady', 'Skojarzenia', 'Zrozumienie', 'Z filmu / serialu', 'Czat', 'Moje notatki'
 ];
 const TYPING = STEPS.indexOf('wpisz');
 const LAST = STEPS.length - 1;
@@ -264,6 +264,23 @@ function renderFilm(card, st) {
   return html;
 }
 
+/** Strona 11 — własne notatki do słowa, zapisywane w karcie i synchronizowane. */
+function renderNotes(card) {
+  const n = card.notes || {};
+  const field = (key, label, placeholder) => `
+    <label class="note-field">
+      <span>${label}</span>
+      <textarea data-note="${key}" rows="3" placeholder="${placeholder}"
+                autocapitalize="sentences" spellcheck="true">${escapeHtml(n[key] || '')}</textarea>
+    </label>`;
+  return head(card)
+    + '<div class="notes-form">'
+    + field('definition', 'Definicja', 'Jak Ty to rozumiesz, własnymi słowami')
+    + field('usage', 'W jakich sytuacjach używać', 'Kiedy to powiesz, w jakim kontekście')
+    + field('other', 'Inne', 'Z czym mylisz, z czym się kojarzy, gdzie to spotkałeś')
+    + '</div>';
+}
+
 /** Minimalny markdown z odpowiedzi czatu: **pogrubienie**, *kursywa*, nowe linie. */
 function formatReply(text) {
   return escapeHtml(text)
@@ -331,6 +348,12 @@ export class Session {
     });
     this.el.chatInput.addEventListener('input', () => this.autosizeChat());
     this.el.body.addEventListener('click', e => this.handleTap(e));
+    // notatki zapisują się same, chwilę po tym, jak przestaniesz pisać
+    this.el.body.addEventListener('input', e => {
+      const field = e.target.closest('[data-note]');
+      if (field) this.noteChanged(field.dataset.note, field.value);
+    });
+    hideKeyboardOnScrollUp(this.el.body, this.el.chatInput);
     attachDrag(this.el.body, {
       axis: 'x',
       shouldStart: e => !e.target.closest('input, textarea, select'),
@@ -393,6 +416,7 @@ export class Session {
     this.drill = usable.length ? usable[card.srs.main.reps % usable.length] : null;
     this.go(0);
     speak(card.english, this.settings.tts);
+    warmUp();                    // budzi funkcję w Azure, zanim dojdziesz do czatu
     this.ensureInsight();        // w tle — zanim dojdziesz do strony 8, zwykle będzie gotowe
   }
 
@@ -431,6 +455,8 @@ export class Session {
     this.el.chatForm.hidden = name !== 'czat' || !aiConfigured();
 
     if (INSIGHT_PAGES.has(name)) this.ensureInsight();
+    // pierwsze pytanie czatu ściągamy stronę wcześniej, żeby nie czekać na nie
+    if (name === 'film') this.startChat();
     if (name === 'czat') {
       this.startChat();
       this.el.body.scrollTop = this.el.body.scrollHeight;
@@ -451,7 +477,8 @@ export class Session {
       skojarzenia: () => renderAssoc(card),
       zrozumienie: () => renderUnderstanding(card, this.insight),
       film: () => renderFilm(card, this.insight),
-      czat: () => renderChat(card, this.chat)
+      czat: () => renderChat(card, this.chat),
+      notatki: () => renderNotes(card)
     }[STEPS[this.step]];
     this.el.content.innerHTML = render();
   }
@@ -545,14 +572,22 @@ export class Session {
     }
     const name = STEPS[this.step];
     if (!STORY.has(name)) return;
-    const toggle = e.target.closest('.pl-toggle');
-    if (toggle) {
-      toggle.closest('.story-card').classList.toggle('open');
+    const r = this.el.body.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width;
+
+    if (name === 'polsku') {
+      // tu tapnięcie w środek ekranu pokazuje angielski, a nie przewija zdanie
+      const cardEl = this.el.content.querySelector('.story-card');
+      if (x > 0.25 && x < 0.75) { cardEl?.classList.toggle('open'); return; }
+      this.storyMove(x <= 0.25 ? -1 : 1);
+      return;
+    }
+    if (e.target.closest('.pl-toggle')) {
+      e.target.closest('.story-card').classList.toggle('open');
       return;
     }
     // jak relacje na Instagramie: lewa 1/3 ekranu = wstecz, reszta = dalej
-    const r = this.el.body.getBoundingClientRect();
-    this.storyMove(e.clientX - r.left < r.width / 3 ? -1 : 1);
+    this.storyMove(x < 1 / 3 ? -1 : 1);
   }
 
   storyMove(dir) {
@@ -635,6 +670,23 @@ export class Session {
     const ta = this.el.chatInput;
     ta.style.height = 'auto';
     ta.style.height = `${Math.min(ta.scrollHeight, 120)}px`;
+  }
+
+  /* ------------------------------------------------ strona 11: notatki */
+
+  noteChanged(field, value) {
+    const card = this.card;
+    if (!card) return;
+    card.notes = { ...(card.notes || {}), [field]: value };
+    clearTimeout(this.noteTimer);
+    this.noteTimer = setTimeout(() => this.saveNotes(card), 700);
+  }
+
+  /** Zapis notatek — po przerwie w pisaniu i przy wyjściu ze słowa. */
+  saveNotes(card = this.card) {
+    clearTimeout(this.noteTimer);
+    if (!card || this.practice) return;
+    putCard(card);
   }
 
   /* ------------------------------------------------ przejścia i gesty */
@@ -729,6 +781,7 @@ export class Session {
   /** Ostatnia strona → następne słowo z kolejki albo ekran podsumowania. */
   finishWord() {
     if (this.animating) return;
+    this.saveNotes();
     this.index++;
     this.openCard();
   }
@@ -748,6 +801,7 @@ export class Session {
   }
 
   close() {
+    this.saveNotes();
     this.el.overlay.hidden = true;
     this.el.overlay.style.height = '';
     this.el.overlay.style.top = '';

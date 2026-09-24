@@ -54,6 +54,7 @@ svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke
   padding:calc(var(--safe-t) + 14px) 20px 12px;
 }
 .sub{color:var(--muted);font-size:13px;margin-top:3px}
+.topbar-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}
 .scroll{
   flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
   padding:4px 16px calc(96px + var(--safe-b));display:flex;flex-direction:column;gap:14px;
@@ -232,6 +233,7 @@ body.is-dragging{user-select:none;-webkit-user-select:none}
   background:rgba(124,92,255,.18);color:var(--accent);transition:transform .12s ease;
 }
 .done-top:active{transform:scale(.95)}
+.done-top.quiet{background:var(--surface-2);color:var(--muted);font-size:14px;font-weight:600;padding:0 14px}
 .step-head{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px}
 .step-head b{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
 .dots{display:flex;gap:6px}
@@ -398,7 +400,7 @@ mark{background:rgba(124,92,255,.22);color:inherit;padding:1px 3px;border-radius
 .chat-form{display:flex;align-items:flex-end;gap:8px}
 .chat-form textarea{
   flex:1;font-family:inherit;font-size:16px;line-height:1.4;color:var(--text);background:var(--surface-2);
-  border:1px solid transparent;border-radius:20px;padding:11px 15px;resize:none;max-height:120px;
+  border:1px solid transparent;border-radius:20px;padding:11px 15px;resize:none;max-height:96px;
 }
 .chat-form textarea:focus{outline:none;border-color:var(--accent)}
 .chat-send{
@@ -406,6 +408,16 @@ mark{background:rgba(124,92,255,.22);color:inherit;padding:1px 3px;border-radius
   background:linear-gradient(135deg,var(--accent),#5b8cff);color:#fff;
 }
 .chat-send svg{width:22px;height:22px;stroke-width:2.4}
+
+/* strona 11: własne notatki */
+.notes-form{display:flex;flex-direction:column;gap:16px}
+.note-field{display:flex;flex-direction:column;gap:6px}
+.note-field>span{font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--accent)}
+.note-field textarea{
+  font-family:inherit;font-size:16px;line-height:1.5;color:var(--text);background:var(--surface-2);
+  border:1px solid transparent;border-radius:14px;padding:12px 14px;width:100%;resize:none;min-height:76px;
+}
+.note-field textarea:focus{outline:none;border-color:var(--accent)}
 
 .session-done{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:var(--bg);padding:24px;text-align:center}
 .done-emoji{font-size:54px;color:var(--accent)}

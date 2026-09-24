@@ -116,6 +116,12 @@ export function makeCard(data = {}) {
     level: data.level || 'B2',
     // objaśnienie z czatu AI (definicja, po co, kiedy, cytat/scena) — generowane raz
     insight: data.insight || null,
+    // wlasne notatki z ostatniej strony nauki (definicja / kiedy uzywac / inne)
+    notes: {
+      definition: (data.notes && data.notes.definition) || '',
+      usage: (data.notes && data.notes.usage) || '',
+      other: (data.notes && data.notes.other) || ''
+    },
     srs: data.srs && data.srs.main ? data.srs : { main: (data.srs && data.srs.recall) || newState() },
     createdAt: data.createdAt || now,
     updatedAt: data.updatedAt || now,

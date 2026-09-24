@@ -46,14 +46,14 @@ async function request(options, attempt = 0) {
 
 function toPayload(card) {
   const { id, english, polishDefinition, pos, phonetic, sentences, collocations,
-    rules, mnemonic, note, tags, level, insight, srs, createdAt, updatedAt, deleted } = card;
+    rules, mnemonic, note, notes, tags, level, insight, srs, createdAt, updatedAt, deleted } = card;
   return {
     english,
     polishDefinition,
     updatedAt,
     payload: JSON.stringify({
       id, pos, phonetic, sentences, collocations, rules,
-      mnemonic, note, tags, level, insight, srs, createdAt, deleted
+      mnemonic, note, notes, tags, level, insight, srs, createdAt, deleted
     })
   };
 }

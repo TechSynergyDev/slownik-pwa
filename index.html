@@ -23,9 +23,14 @@
         <h1>Dziś</h1>
         <p class="sub" id="today-date"></p>
       </div>
+      <div class="topbar-actions">
+      <button class="icon-btn" id="btn-chat" aria-label="Czat z AI">
+        <svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H7l-4 3 1-5a8 8 0 1 1 17-6z"/></svg>
+      </button>
       <button class="icon-btn" id="btn-settings" aria-label="Ustawienia">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2-1.5-2-3.5-2.4 1a7.6 7.6 0 0 0-1.7-1L15 3H9l-.3 2.6a7.6 7.6 0 0 0-1.7 1l-2.4-1-2 3.5L4.6 11a7.6 7.6 0 0 0 0 2l-2 1.5 2 3.5 2.4-1c.5.4 1.1.7 1.7 1L9 21h6l.3-2.6c.6-.3 1.2-.6 1.7-1l2.4 1 2-3.5z"/></svg>
       </button>
+      </div>
     </header>
 
     <div class="scroll">
@@ -232,6 +237,31 @@
       <button class="btn primary big" id="btn-next-word" hidden>Kolejne słowo</button>
       <button class="btn ghost" id="btn-done">Wróć</button>
     </div>
+  </div>
+</div>
+
+<!-- ---------- CZAT OGÓLNY (ikona na pulpicie) ---------- -->
+<div class="overlay" id="chat-view" hidden>
+  <div class="session-top">
+    <button class="icon-btn" id="btn-close-chat" aria-label="Zamknij"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div class="step-head"><b>Czat</b></div>
+    <div class="top-right">
+      <button class="done-top quiet" id="btn-clear-chat" type="button">Wyczyść</button>
+    </div>
+  </div>
+
+  <div class="session-body" id="free-chat-body">
+    <div class="chat-log" id="free-chat-log"></div>
+  </div>
+
+  <div class="session-nav">
+    <form class="chat-form" id="free-chat-form">
+      <textarea id="free-chat-input" rows="1" placeholder="O co chcesz zapytać?" enterkeyhint="send"
+                autocapitalize="sentences" spellcheck="true"></textarea>
+      <button class="chat-send" type="submit" aria-label="Wyślij">
+        <svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+      </button>
+    </form>
   </div>
 </div>
 

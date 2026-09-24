@@ -50,7 +50,9 @@ export function attachDrag(el, { axis = 'x', shouldStart, onMove, onEnd }) {
     if (locked === axis) {
       const d = cancelled ? 0 : (axis === 'x' ? e.clientX - start.x : e.clientY - start.y);
       const v = cancelled ? 0 : d / Math.max(1, performance.now() - start.t);
-      suppressUntil = performance.now() + 350;
+      // tylko prawdziwe przeciagniecie uniewaznia tapniecie; drgniecie palca
+      // przy dotknieciu ekranu nie moze zjadac klikniecia
+      if (Math.abs(d) > 20) suppressUntil = performance.now() + 350;
       document.body.classList.remove('is-dragging');
       onEnd(d, v);
     }
@@ -68,6 +70,20 @@ export function attachDrag(el, { axis = 'x', shouldStart, onMove, onEnd }) {
     e.stopPropagation();
     e.preventDefault();
   }, true);
+}
+
+/**
+ * Przewinięcie listy w górę chowa klawiaturę — tak jak w ChatGPT: chcesz
+ * poczytać historię, więc pole pisania wraca do jednej linii i oddaje ekran.
+ * Automatyczne przewinięcie na dół (po wysłaniu) nie chowa niczego.
+ */
+export function hideKeyboardOnScrollUp(scroller, input) {
+  let last = 0;
+  scroller.addEventListener('scroll', () => {
+    const top = scroller.scrollTop;
+    if (top < last - 12 && document.activeElement === input) input.blur();
+    last = top;
+  }, { passive: true });
 }
 
 /** Czy gest przekroczył próg — „do połowy" albo szybkie machnięcie. */

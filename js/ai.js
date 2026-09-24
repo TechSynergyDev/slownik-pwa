@@ -59,6 +59,29 @@ export async function explainWord(card) {
   return { ...data.insight, createdAt: Date.now() };
 }
 
+/**
+ * Budzi funkcję w Azure (plan Consumption zasypia i pierwsze żądanie potrafi
+ * czekać 20–30 s). Nie woła OpenAI, więc nic nie kosztuje. Błędy ignorujemy —
+ * to tylko przyspieszenie.
+ */
+export function warmUp() {
+  if (!aiConfigured()) return;
+  fetch(AI_API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ mode: 'ping' })
+  }).catch(() => {});
+}
+
+/** Czat ogólny — bez konkretnego słowa (ikona czatu na pulpicie). */
+export async function freeReply(messages) {
+  const history = messages
+    .filter(m => m.role === 'user' || m.role === 'assistant')
+    .map(m => ({ role: m.role, content: m.content }));
+  const data = await call({ mode: 'free', messages: history });
+  return data.reply || '';
+}
+
 /** Kolejna wypowiedź korepetytora. Pusta historia = czat zaczyna i zadaje pytanie. */
 export async function tutorReply(card, messages) {
   const history = messages

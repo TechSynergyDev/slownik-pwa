@@ -103,6 +103,12 @@ Objaśnienie słowa (strony 8–9) generuje się **raz** — w tle, gdy otwieras
 słowo — i zapisuje w karcie, razem z nią synchronizuje się z Azure. Kolejne
 podejścia do tego samego słowa nie kosztują już nic.
 
+**Skąd szybkość:** otwarcie słowa i otwarcie czatu wysyłają puste żądanie
+`ping`, które tylko budzi funkcję (nie woła OpenAI, więc nic nie kosztuje) —
+dzięki temu zimny start planu Consumption nie każe czekać 20 sekund przy
+pierwszej wiadomości. Pierwsze pytanie czatu pobiera się już na stronie 9,
+a odpowiedzi mają do około 60 słów, bo krótsze przychodzą szybciej.
+
 Test z terminala (wstaw swój klucz funkcji `chat`):
 
 ```bash
@@ -131,7 +137,7 @@ znaczek **AI**. Traktuj go jako ciekawostkę, nie źródło.
    Nie ma etykiet „nowe" i „powtórka": to rozróżnienie należy do algorytmu,
    nie do Ciebie.
 
-## Dziesięć stron nauki
+## Jedenaście stron nauki
 
 Jeden przycisk **„Nauka słowa"** uruchamia zawsze tę samą ścieżkę:
 
@@ -147,16 +153,28 @@ Jeden przycisk **„Nauka słowa"** uruchamia zawsze tę samą ścieżkę:
 | 8 | **Zrozumienie** | definicja · po co się go używa · kiedy się go używa (z czatu AI) |
 | 9 | **Z filmu / serialu** | cytat z filmu lub serialu, jeśli istnieje autentyczny, i krótka scena z użyciem słowa (z czatu AI) |
 | 10 | **Czat** | rozmowa z AI o tym jednym słowie: czat pyta, Ty odpowiadasz, on prostuje i dopowiada |
+| 11 | **Moje notatki** | trzy pola — *Definicja*, *W jakich sytuacjach używać*, *Inne* — zapisywane w karcie i synchronizowane z Azure |
 
 **Poruszanie się:**
 
 - **przesunięcie palcem w lewo / w prawo** — następna / poprzednia strona,
-- **na stronach 2 i 4 tapnięcie z boku** — jak w relacjach: lewa jedna trzecia
+- **na stronie 2 tapnięcie z boku** — jak w relacjach: lewa jedna trzecia
   ekranu = poprzednie zdanie, reszta = następne. Za ostatnim zdaniem tapnięcie
   przechodzi na kolejną stronę, przed pierwszym — na poprzednią,
+- **na stronie 4 tapnięcie w środek odsłania angielski**; zdania przewijają
+  tylko wąskie paski przy krawędziach (po 25% szerokości), żeby podglądanie
+  tłumaczenia nie zmieniało zdania,
 - **na stronie 1 przesunięcie w prawo** do mniej więcej połowy ekranu zamyka
   naukę i wraca na pulpit,
-- na ostatniej stronie strzałka zamienia się w **ptaszek** — kończy słowo.
+- na ostatniej stronie zamiast strzałki jest **Done** w prawym górnym rogu.
+
+**Czat ogólny** otwiera ikona dymka na pulpicie, obok koła zębatego — rozmowa
+bez konkretnego słowa: gramatyka, różnice między słowami, poprawianie własnych
+zdań. Historia zapisuje się lokalnie i wraca po zamknięciu aplikacji, a przycisk
+*Wyczyść* zaczyna od nowa. Ekran zamyka krzyżyk albo przesunięcie palcem w prawo.
+
+**Klawiatura w czacie** chowa się, gdy przewiniesz rozmowę w górę — tak jak
+w ChatGPT. Pole pisania wraca do jednej linii i oddaje ekran historii.
 
 ### Ocena — tylko ze strony 1
 

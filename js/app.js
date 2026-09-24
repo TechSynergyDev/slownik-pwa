@@ -4,13 +4,15 @@
 
 import { $, $$, toast, download, speak, normalizeId, startOfDay, escapeHtml, sentenceContains } from './util.js';
 import { allCards, getCard, putCard, putMany, removeCard, makeCard, getSettings, saveSettings,
+         getMeta, setMeta,
          getStreak, allReviews, reviewsSince } from './db.js';
 import { newState, currentRetrievability } from './fsrs.js';
 import { Session, buildQueue, introducedToday } from './session.js';
 import { renderToday, weekStrip, upcomingList, renderLibrary, collectTags, renderWordDetail, renderStats } from './views.js';
 import { sync, pushCardQuietly, lastSync } from './sync.js';
 import { seedToCards } from './seed.js';
-import { attachDrag, passed } from './gestures.js';
+import { attachDrag, passed, hideKeyboardOnScrollUp } from './gestures.js';
+import { freeReply, warmUp, aiConfigured } from './ai.js';
 
 const state = {
   cards: [],
@@ -266,6 +268,73 @@ async function wordAction(act) {
   }
 }
 
+/* ------------------------------------------------------------ czat ogólny */
+
+/**
+ * Czat spod ikony na pulpicie — nie dotyczy konkretnego słowa. Historia jest
+ * zapisywana lokalnie, więc rozmowa przeżywa zamknięcie aplikacji.
+ */
+const chat = { messages: [], busy: false, loaded: false };
+
+function chatBubbles() {
+  const log = $('#free-chat-log');
+  if (!aiConfigured()) {
+    log.innerHTML = `<div class="bubble bot">Czat AI nie jest jeszcze podłączony.
+      Wklej adres funkcji <b>chat</b> w pliku js/config.js (AI_API_URL).</div>`;
+    return;
+  }
+  if (!chat.messages.length && !chat.busy) {
+    log.innerHTML = `<div class="bubble bot">Cześć. Zapytaj o dowolne słowo, zwrot
+      albo popraw ze mną swoje zdanie po angielsku.</div>`;
+    return;
+  }
+  log.innerHTML = chat.messages.map(m => {
+    const text = escapeHtml(m.content).replace(/\n/g, '<br>');
+    if (m.role === 'user') return `<div class="bubble me">${text}</div>`;
+    if (m.role === 'error') return `<div class="bubble err">${text}</div>`;
+    return `<div class="bubble bot">${text.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')}</div>`;
+  }).join('') + (chat.busy ? '<div class="bubble bot typing"><i></i><i></i><i></i></div>' : '');
+  $('#free-chat-body').scrollTop = $('#free-chat-body').scrollHeight;
+}
+
+async function openChat() {
+  if (!chat.loaded) {
+    chat.messages = await getMeta('freeChat', []);
+    chat.loaded = true;
+  }
+  $('#chat-view').hidden = false;
+  document.body.style.overflow = 'hidden';
+  warmUp();                                   // budzi funkcję, zanim coś napiszesz
+  chatBubbles();
+}
+
+function closeChat() {
+  $('#chat-view').hidden = true;
+  document.body.style.overflow = '';
+}
+
+async function sendChat() {
+  const input = $('#free-chat-input');
+  const text = input.value.trim();
+  if (!text || chat.busy) return;
+  input.value = '';
+  input.style.height = 'auto';
+  chat.messages.push({ role: 'user', content: text });
+  chat.busy = true;
+  chatBubbles();
+  try {
+    const reply = await freeReply(chat.messages);
+    chat.messages.push({ role: 'assistant', content: reply || '…' });
+  } catch (err) {
+    chat.messages.push({ role: 'error', content: `Nie udało się: ${err.message}` });
+  } finally {
+    chat.busy = false;
+    chatBubbles();
+    // trzymamy ostatnie 40 wiadomości — tyle wystarczy, żeby wrócić do wątku
+    await setMeta('freeChat', chat.messages.slice(-40));
+  }
+}
+
 /* --------------------------------------------------------------- arkusze */
 
 /**
@@ -491,6 +560,43 @@ async function init() {
     if (a) wordAction(a.dataset.act);
   });
 
+  // czat ogólny spod ikony na pulpicie
+  $('#btn-chat').addEventListener('click', openChat);
+  $('#btn-close-chat').addEventListener('click', closeChat);
+  $('#btn-clear-chat').addEventListener('click', async () => {
+    chat.messages = [];
+    await setMeta('freeChat', []);
+    chatBubbles();
+  });
+  $('#free-chat-form').addEventListener('submit', e => { e.preventDefault(); sendChat(); });
+  $('#free-chat-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
+  });
+  $('#free-chat-input').addEventListener('input', e => {
+    e.target.style.height = 'auto';
+    e.target.style.height = `${Math.min(e.target.scrollHeight, 96)}px`;
+  });
+  hideKeyboardOnScrollUp($('#free-chat-body'), $('#free-chat-input'));
+  attachDrag($('#free-chat-body'), {
+    axis: 'x',
+    shouldStart: e => !e.target.closest('input, textarea'),
+    onMove: dx => {
+      if (dx < 0) return;
+      $('#chat-view').style.transition = 'none';
+      $('#chat-view').style.transform = `translateX(${dx}px)`;
+    },
+    onEnd: (dx, v) => {
+      const view = $('#chat-view');
+      view.style.transition = 'transform .22s ease-out';
+      if (dx > 0 && passed(dx, v, view.clientWidth, 0.4)) {
+        view.style.transform = 'translateX(100%)';
+        setTimeout(() => { closeChat(); view.style.transition = ''; view.style.transform = ''; }, 220);
+      } else {
+        view.style.transform = '';
+      }
+    }
+  });
+
   // ustawienia
   setupSheet($('#sheet-settings'), closeSettings);
   $('#btn-settings').addEventListener('click', () => { fillSettings(); $('#sheet-settings').hidden = false; });
@@ -499,6 +605,7 @@ async function init() {
   // Escape na komputerze zamyka to, co leży na wierzchu
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
+    if (!$('#chat-view').hidden) return closeChat();
     if (!$('#sheet-word').hidden) return closeWord();
     if (!$('#sheet-settings').hidden) return closeSettings();
     if (!$('#session').hidden) session.close();
